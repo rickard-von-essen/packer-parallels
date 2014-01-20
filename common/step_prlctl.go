@@ -46,7 +46,7 @@ func (s *StepPrlctl) Run(state multistep.StateBag) multistep.StepAction {
 			var err error
 			command[i], err = s.Tpl.Process(arg, tplData)
 			if err != nil {
-				err := fmt.Errorf("Error preparing vboxmanage command: %s", err)
+				err := fmt.Errorf("Error preparing prlctl command: %s", err)
 				state.Put("error", err)
 				ui.Error(err.Error())
 				return multistep.ActionHalt

@@ -11,14 +11,9 @@ import (
 type StepUseDefaults struct{}
 
 func (StepUseDefaults) Run(state multistep.StateBag) multistep.StepAction {
-	log.Printf("DEFAULT: 1") //DEBUG
 	driver := state.Get("driver").(Driver)
-	log.Printf("DEFAULT: 2") //DEBUG
 	ui := state.Get("ui").(packer.Ui)
-	log.Printf("DEFAULT: 3")       //DEBUG
-	log.Printf("State: %s", state) // DEBUG
 	vmName := state.Get("vmName").(string)
-	log.Printf("DEFAULT: 4") //DEBUG
 
 	log.Println("Use default answers in Parallels")
 	if err := driver.UseDefaults(vmName); err != nil {

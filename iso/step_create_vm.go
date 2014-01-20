@@ -22,16 +22,12 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 
 	name := config.VMName
 
-	commands := make([][]string, 4)
+	commands := make([][]string, 3)
 	commands[0] = []string{
 		"create", name,
 		"--ostype", config.GuestOSType,
 		"--distribution", config.GuestOSDistribution,
 	}
-	//commands[1] = []string{
-	//	"set", name,
-	//	"--device-bootorder", "hdd cdrom net",
-	//}
 	commands[1] = []string{"set", name, "--cpus", "1"}
 	commands[2] = []string{"set", name, "--memsize", "512"}
 
@@ -64,9 +60,12 @@ func (s *stepCreateVM) Cleanup(state multistep.StateBag) {
 
 	driver := state.Get("driver").(parallelscommon.Driver)
 	ui := state.Get("ui").(packer.Ui)
+	config := state.Get("config").(*config)
 
-	ui.Say("Deleting virtual machine...")
-	if err := driver.Prlctl("delete", s.vmName); err != nil {
-		ui.Error(fmt.Sprintf("Error deleting virtual machine: %s", err))
+	if config.DeleteVM {
+		ui.Say("Deleting virtual machine...")
+		if err := driver.Prlctl("delete", s.vmName); err != nil {
+			ui.Error(fmt.Sprintf("Error deleting virtual machine: %s", err))
+		}
 	}
 }

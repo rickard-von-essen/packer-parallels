@@ -52,6 +52,7 @@ type config struct {
 	ISOChecksumType      string   `mapstructure:"iso_checksum_type"`
 	ISOUrls              []string `mapstructure:"iso_urls"`
 	VMName               string   `mapstructure:"vm_name"`
+	DeleteVM             bool     `mapstructure:"delete_vm"`
 
 	RawSingleISOUrl string `mapstructure:"iso_url"`
 
@@ -115,7 +116,6 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	if b.config.VMName == "" {
 		b.config.VMName = fmt.Sprintf("packer-%s", b.config.PackerBuildName)
 	}
-	log.Printf("VMName: %s", b.config.VMName) // DEBUG
 
 	// Errors
 	templates := map[string]*string{
@@ -267,6 +267,13 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 	}
 
 	steps := []multistep.Step{
+		&common.StepDownload{
+			Checksum:     b.config.ISOChecksum,
+			ChecksumType: b.config.ISOChecksumType,
+			Description:  "ISO",
+			ResultKey:    "iso_path",
+			Url:          b.config.ISOUrls,
+		},
 		&parallelscommon.StepOutputDir{
 			Force: b.config.PackerForce,
 			Path:  b.config.OutputDir,
@@ -281,39 +288,40 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		new(stepAttachISO),
 		new(stepAttachParallelsTools),
 		new(parallelscommon.StepAttachFloppy),
-		&parallelscommon.StepForwardSSH{
-			GuestPort:   b.config.SSHPort,
-			HostPortMin: b.config.SSHHostPortMin,
-			HostPortMax: b.config.SSHHostPortMax,
-		},
+		// TODO: This has to be done in a different way for Parallels
+		//&parallelscommon.StepForwardSSH{
+		//	GuestPort:   b.config.SSHPort,
+		//	HostPortMin: b.config.SSHHostPortMin,
+		//	HostPortMax: b.config.SSHHostPortMax,
+		//},
 		&parallelscommon.StepPrlctl{
 			Commands: b.config.Prlctl,
 			Tpl:      b.config.tpl,
 		},
 		&parallelscommon.StepRun{
 			BootWait: b.config.BootWait,
-			Headless: b.config.Headless,
+			Headless: b.config.Headless, // TODO: migth work on Enterprise Ed.
 		},
-		new(stepTypeBootCommand),
-		&common.StepConnectSSH{
-			SSHAddress:     parallelscommon.SSHAddress,
-			SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
-			SSHWaitTimeout: b.config.SSHWaitTimeout,
-		},
-		&parallelscommon.StepUploadVersion{
-			Path: b.config.PrlctlVersionFile,
-		},
-		new(stepUploadParallelsTools),
-		new(common.StepProvision),
-		&parallelscommon.StepShutdown{
-			Command: b.config.ShutdownCommand,
-			Timeout: b.config.ShutdownTimeout,
-		},
-		new(parallelscommon.StepRemoveDevices),
-		&parallelscommon.StepExport{
-			Format:    b.config.Format,
-			OutputDir: b.config.OutputDir,
-		},
+		//new(stepTypeBootCommand),
+		//&common.StepConnectSSH{
+		//	SSHAddress:     parallelscommon.SSHAddress,
+		//	SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
+		//	SSHWaitTimeout: b.config.SSHWaitTimeout,
+		//},
+		//&parallelscommon.StepUploadVersion{
+		//	Path: b.config.PrlctlVersionFile,
+		//},
+		//new(stepUploadParallelsTools),
+		//new(common.StepProvision),
+		//&parallelscommon.StepShutdown{
+		//	Command: b.config.ShutdownCommand,
+		//	Timeout: b.config.ShutdownTimeout,
+		//},
+		//new(parallelscommon.StepRemoveDevices),
+		//&parallelscommon.StepExport{
+		//	Format:    b.config.Format,
+		//	OutputDir: b.config.OutputDir,
+		//},
 	}
 
 	// Setup the state bag
@@ -323,8 +331,6 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 	state.Put("driver", driver)
 	state.Put("hook", hook)
 	state.Put("ui", ui)
-
-	log.Printf("State %s", state) //DEBUG
 
 	// Run
 	if b.config.PackerDebug {

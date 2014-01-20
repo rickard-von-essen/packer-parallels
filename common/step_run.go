@@ -28,14 +28,14 @@ func (s *StepRun) Run(state multistep.StateBag) multistep.StepAction {
 	vmName := state.Get("vmName").(string)
 
 	ui.Say("Starting the virtual machine...")
-	guiArgument := "gui"
+	//guiArgument := "gui"
 	if s.Headless == true {
 		ui.Message("WARNING: The VM will be started in headless mode, as configured.\n" +
 			"In headless mode, errors during the boot sequence or OS setup\n" +
 			"won't be easily visible. Use at your own discretion.")
-		guiArgument = "headless"
+		//guiArgument = "headless"
 	}
-	command := []string{"startvm", vmName, "--type", guiArgument}
+	command := []string{"start", vmName}
 	if err := driver.Prlctl(command...); err != nil {
 		err := fmt.Errorf("Error starting VM: %s", err)
 		state.Put("error", err)
@@ -73,8 +73,8 @@ func (s *StepRun) Cleanup(state multistep.StateBag) {
 	ui := state.Get("ui").(packer.Ui)
 
 	if running, _ := driver.IsRunning(s.vmName); running {
-		if err := driver.Prlctl("controlvm", s.vmName, "poweroff"); err != nil {
-			ui.Error(fmt.Sprintf("Error shutting down VM: %s", err))
+		if err := driver.Prlctl("stop", s.vmName); err != nil {
+			ui.Error(fmt.Sprintf("Error stopping VM: %s", err))
 		}
 	}
 }

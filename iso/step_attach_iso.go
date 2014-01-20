@@ -24,12 +24,10 @@ func (s *stepAttachISO) Run(state multistep.StateBag) multistep.StepAction {
 
 	// Attach the disk to the controller
 	command := []string{
-		"storageattach", vmName,
-		"--storagectl", "IDE Controller",
-		"--port", "0",
-		"--device", "1",
-		"--type", "dvddrive",
-		"--medium", isoPath,
+		"set", vmName,
+		"--device-set", "cdrom0",
+		"--image", isoPath,
+		"--enable", "--connect",
 	}
 	if err := driver.Prlctl(command...); err != nil {
 		err := fmt.Errorf("Error attaching ISO: %s", err)
@@ -38,7 +36,7 @@ func (s *stepAttachISO) Run(state multistep.StateBag) multistep.StepAction {
 		return multistep.ActionHalt
 	}
 
-	// Track the path so that we can unregister it from VirtualBox later
+	// Track the path so that we can unregister it from Parallels later
 	s.diskPath = isoPath
 
 	// Set some state so we know to remove
@@ -56,11 +54,8 @@ func (s *stepAttachISO) Cleanup(state multistep.StateBag) {
 	vmName := state.Get("vmName").(string)
 
 	command := []string{
-		"storageattach", vmName,
-		"--storagectl", "IDE Controller",
-		"--port", "0",
-		"--device", "1",
-		"--medium", "none",
+		"set", vmName,
+		"--device-del", "cdrom0",
 	}
 
 	// Remove the ISO. Note that this will probably fail since
