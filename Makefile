@@ -26,7 +26,7 @@ format:
 	go fmt ./...
 
 test: deps
-	@echo "$(OK_COLOR)==> Testing Packer...$(NO_COLOR)"
+	@echo "$(OK_COLOR)==> Testing Parallels Packer Build plugin ...$(NO_COLOR)"
 	go test ./...
 
 .PHONY: all clean deps format test updatedeps

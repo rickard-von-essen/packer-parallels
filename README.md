@@ -1,8 +1,11 @@
 # Packer Parallels Plugin
 
-This is a custom builder plugin for [Packer](http://www.packer.io/) using [Parallels](http://www.parallels.com/).
+This is a custom builder plugin for [Packer](http://www.packer.io/) using [Parallels Desktop for Mac](http://www.parallels.com/products/desktop/).
 
 **Current status: Alpha - BROKEN!**
+
+![Parallels Logo](imgs/parallels_small.png)
+
 
 ## Status
 This is currently under development. Don't expect it to work. The only reason to run this plugin is if you wont to contribute to its development.
@@ -20,10 +23,11 @@ Install packer and add the following to ```~/.packerconfig```
    }
 }
 ```
+Then download and install this plugin. Since this depends on [Go Parallelles SDK - C API Wrapper](https://github.com/rickard-von-essen/goprlapi) which in turn requires [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg), download and install it first.
 
 ```
 cd $GOPATH/src && git clone https://github.com/rickard-von-essen/packer-parallels
-cd packer-parallels
+cd github.com/rickard-von-essen/packer-parallels
 go get -u github.com/mitchellh/gox
 make
 ```
@@ -37,3 +41,5 @@ If you have any improvments open a pull request at [github](https://github.com/r
 ## License
 
 This code is distributed under the MIT license, see _LICENSE_.
+
+© 2014 Rickard von Essen

@@ -5,6 +5,7 @@ import (
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
 	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
+	"path/filepath"
 )
 
 // This step creates the actual virtual machine.
@@ -21,12 +22,14 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 
 	name := config.VMName
+	path := filepath.Join(".", config.OutputDir) //, fmt.Sprintf("%s.pvm", name)
 
 	commands := make([][]string, 3)
 	commands[0] = []string{
 		"create", name,
 		"--ostype", config.GuestOSType,
 		"--distribution", config.GuestOSDistribution,
+		"--dst", path,
 	}
 	commands[1] = []string{"set", name, "--cpus", "1"}
 	commands[2] = []string{"set", name, "--memsize", "512"}
