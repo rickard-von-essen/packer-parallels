@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
-	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
+	//	"github.com/rickard-von-essen/packer-parallels/common"
 	"log"
 	"strings"
 	"time"
@@ -20,7 +20,7 @@ type bootCommandTemplateData struct {
 	Name     string
 }
 
-// This step "types" the boot command into the VM over VNC.
+// This step "types" the boot command into the VM via the Parallels Virtualization SDK - C API.
 //
 // Uses:
 //   config *config
@@ -35,10 +35,10 @@ type stepTypeBootCommand struct{}
 
 func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction {
 	config := state.Get("config").(*config)
-	driver := state.Get("driver").(parallelscommon.Driver)
+	//	driver := state.Get("driver").(common.Driver)
 	httpPort := state.Get("http_port").(uint)
 	ui := state.Get("ui").(packer.Ui)
-	vmName := state.Get("vmName").(string)
+	//	vmName := state.Get("vmName").(string)
 
 	tplData := &bootCommandTemplateData{
 		"10.0.2.2",
@@ -77,13 +77,14 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 			if _, ok := state.GetOk(multistep.StateCancelled); ok {
 				return multistep.ActionHalt
 			}
-
-			if err := driver.Prlctl("controlvm", vmName, "keyboardputscancode", code); err != nil {
-				err := fmt.Errorf("Error sending boot command: %s", err)
-				state.Put("error", err)
-				ui.Error(err.Error())
-				return multistep.ActionHalt
-			}
+			/*
+				if err := driver.SendKeyScanCode(vmName, code); err != nil {
+					err := fmt.Errorf("Error sending boot command: %s", err)
+					state.Put("error", err)
+					ui.Error(err.Error())
+					return multistep.ActionHalt
+				}
+			*/
 		}
 	}
 
@@ -96,7 +97,7 @@ func scancodes(message string) []string {
 	// Scancodes reference: http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
 	//
 	// Scancodes represent raw keyboard output and are fed to the VM by the
-	// VBoxManage controlvm keyboardputscancode program.
+	// Parallels Virtualization SDK - C API, PrlDevKeyboard_SendKeyEvent
 	//
 	// Scancodes are recorded here in pairs. The first entry represents
 	// the key press and the second entry represents the key release and is

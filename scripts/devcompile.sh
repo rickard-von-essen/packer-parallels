@@ -40,7 +40,7 @@ GO_INSTALLED_VERSION=$(go version | cut -d ' ' -f 3)
 GO_INSTALLED_VERSION=${GO_INSTALLED_VERSION#"go"}
 
 echo -e "${OK_COLOR}==> Verifying Go"
-verify_go $GO_MINIMUM_VERSION $GO_INSTALLED_VERSION
+#verify_go $GO_MINIMUM_VERSION $GO_INSTALLED_VERSION
 
 # Get the parent directory of where this script is.
 SOURCE="${BASH_SOURCE[0]}"

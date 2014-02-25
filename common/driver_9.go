@@ -3,6 +3,7 @@ package common
 import (
 	"bytes"
 	"fmt"
+	"github.com/rickard-von-essen/goprlapi"
 	"log"
 	"os/exec"
 	"regexp"
@@ -13,6 +14,7 @@ import (
 type Parallels9Driver struct {
 	// This is the path to the "prlctl" application.
 	PrlctlPath string
+	server     goprlapi.Server
 }
 
 func (d *Parallels9Driver) CreateSATAController(vmName string, name string) error {
@@ -140,4 +142,13 @@ func (d *Parallels9Driver) Version() (string, error) {
 
 	log.Printf("prlctl version: %s", matches[0])
 	return matches[0], nil
+}
+
+func (d *Parallels9Driver) GetVm(vmName string) (DriverVm, error) {
+	vm, err := d.server.GetVm(vmName)
+	if err != nil {
+		return nil, err
+
+	}
+	return &Parallels9DriverVm{vm}, nil
 }

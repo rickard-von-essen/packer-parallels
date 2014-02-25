@@ -16,7 +16,6 @@ import (
 // Produces:
 //   exportPath string - The path to the resulting export.
 type StepExport struct {
-	Format    string
 	OutputDir string
 }
 
@@ -31,7 +30,7 @@ func (s *StepExport) Run(state multistep.StateBag) multistep.StepAction {
 
 	// Clear out the Packer-created forwarding rule
 	ui.Say("Preparing to export machine...")
-	ui.Message(fmt.Sprintf(
+	/*ui.Message(fmt.Sprintf(
 		"Deleting forwarded port mapping for SSH (host port %d)",
 		state.Get("sshHostPort")))
 	command := []string{"modifyvm", vmName, "--natpf1", "delete", "packerssh"}
@@ -41,21 +40,19 @@ func (s *StepExport) Run(state multistep.StateBag) multistep.StepAction {
 		ui.Error(err.Error())
 		return multistep.ActionHalt
 	}
+	*/
 
-	// Export the VM to an OVF
-	outputPath := filepath.Join(s.OutputDir, vmName+"."+s.Format)
+	outputPath := filepath.Join(s.OutputDir, vmName+".pvm")
 
-	command = []string{
-		"export",
+	command := []string{
+		"unregister",
 		vmName,
-		"--output",
-		outputPath,
 	}
 
-	ui.Say("Exporting virtual machine...")
+	ui.Say("Unregister virtual machine...")
 	err := driver.Prlctl(command...)
 	if err != nil {
-		err := fmt.Errorf("Error exporting virtual machine: %s", err)
+		err := fmt.Errorf("Error unregistering virtual machine: %s", err)
 		state.Put("error", err)
 		ui.Error(err.Error())
 		return multistep.ActionHalt
