@@ -36,7 +36,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	//commands[2] = []string{"set", name, "--memsize", "512"}
 
 	ui.Say("Creating virtual machine...")
-	err := driver.Prlctl("create", name, "--ostype", config.GuestOSType, "--distribution", config.GuestOSDistribution, "--dst", path)
+	err := driver.Prlctl("create", name, "--ostype", config.GuestOSType, "--distribution", config.GuestOSDistribution, "--dst", path, "--vmtype", "vm")
 	if err != nil {
 		ui.Error(fmt.Errorf("Error creating VM: %s", err).Error())
 	}
@@ -57,6 +57,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 				}
 			}
 	*/
+	s.vmName = name
 
 	// Set the final name in the state bag so others can use it
 	state.Put("vmName", s.vmName)

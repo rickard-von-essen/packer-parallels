@@ -284,25 +284,25 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		new(stepHTTPServer),
 		new(stepCreateVM),
 		//new(parallelscommon.StepUseDefaults),
-		//new(stepCreateDisk),
-		//new(stepAttachISO),
-		//new(stepAttachParallelsTools),
-		//new(parallelscommon.StepAttachFloppy),
+		new(stepCreateDisk),
+		new(stepAttachISO),
+		new(stepAttachParallelsTools),
+		new(parallelscommon.StepAttachFloppy),
 		// TODO: This has to be done in a different way for Parallels
 		//&parallelscommon.StepForwardSSH{
 		//	GuestPort:   b.config.SSHPort,
 		//	HostPortMin: b.config.SSHHostPortMin,
 		//	HostPortMax: b.config.SSHHostPortMax,
 		//},
-		//&parallelscommon.StepPrlctl{
-		//	Commands: b.config.Prlctl,
-		//	Tpl:      b.config.tpl,
-		//},
-		/*&parallelscommon.StepRun{
+		&parallelscommon.StepPrlctl{
+			Commands: b.config.Prlctl,
+			Tpl:      b.config.tpl,
+		},
+		&parallelscommon.StepRun{
 			BootWait: b.config.BootWait,
 			Headless: b.config.Headless, // TODO: migth work on Enterprise Ed.
-		},*/
-		//new(stepTypeBootCommand),
+		},
+		new(stepTypeBootCommand),
 		//&common.StepConnectSSH{
 		//	SSHAddress:     parallelscommon.SSHAddress,
 		//	SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
@@ -313,10 +313,10 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		//},
 		//new(stepUploadParallelsTools),
 		//new(common.StepProvision),
-		/*&parallelscommon.StepShutdown{
+		&parallelscommon.StepShutdown{
 			Command: b.config.ShutdownCommand,
 			Timeout: b.config.ShutdownTimeout,
-		},*/
+		},
 		//new(parallelscommon.StepRemoveDevices),
 		/*&parallelscommon.StepExport{
 			OutputDir: b.config.OutputDir,
@@ -357,8 +357,8 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		return nil, errors.New("Build was halted.")
 	}
 
-	return parallelscommon.NewArtifact("test-dir")
-	//return parallelscommon.NewArtifact(b.config.OutputDir)
+	//return parallelscommon.NewArtifact("test-dir")
+	return parallelscommon.NewArtifact(b.config.OutputDir)
 }
 
 func (b *Builder) Cancel() {

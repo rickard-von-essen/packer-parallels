@@ -3,10 +3,12 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 DEPS = $(go list -f '{{range .TestImports}}{{.}} {{end}}' ./...)
+LDFLAGS=-framework ParallelsVirtualizationSDK
 
 all: deps
 	@mkdir -p bin/
 	@echo "$(OK_COLOR)==> Building$(NO_COLOR)"
+	@gcc -o bin/prltype $(LDFLAGS) cpp/prltype.cpp
 	@bash --norc -i ./scripts/devcompile.sh
 
 deps:

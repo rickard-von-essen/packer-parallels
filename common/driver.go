@@ -1,7 +1,6 @@
 package common
 
 import (
-	"github.com/rickard-von-essen/goprlapi"
 	"log"
 	"os/exec"
 )
@@ -42,8 +41,8 @@ type Driver interface {
 	// Version reads the version of Parallels that is installed.
 	Version() (string, error)
 
-	// Get Virtual Machine abstraction
-	GetVm(string) (DriverVm, error)
+	// Send scancodes to the vm using the prltype tool.
+	SendKeyScanCodes(string, ...string) error
 }
 
 func NewDriver() (Driver, error) {
@@ -57,12 +56,8 @@ func NewDriver() (Driver, error) {
 		}
 	}
 
-	server, err := goprlapi.LoginLocal()
-	if err != nil {
-		return nil, err
-	}
 	log.Printf("prlctl path: %s", prlctlPath)
-	driver := &Parallels9Driver{prlctlPath, server}
+	driver := &Parallels9Driver{prlctlPath}
 	if err := driver.Verify(); err != nil {
 		return nil, err
 	}

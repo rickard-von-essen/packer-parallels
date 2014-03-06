@@ -3,7 +3,6 @@ package common
 import (
 	"bytes"
 	"fmt"
-	"github.com/rickard-von-essen/goprlapi"
 	"log"
 	"os/exec"
 	"regexp"
@@ -14,7 +13,6 @@ import (
 type Parallels9Driver struct {
 	// This is the path to the "prlctl" application.
 	PrlctlPath string
-	server     goprlapi.Server
 }
 
 func (d *Parallels9Driver) CreateSATAController(vmName string, name string) error {
@@ -144,11 +142,34 @@ func (d *Parallels9Driver) Version() (string, error) {
 	return matches[0], nil
 }
 
-func (d *Parallels9Driver) GetVm(vmName string) (DriverVm, error) {
-	vm, err := d.server.GetVm(vmName)
-	if err != nil {
-		return nil, err
+func (d *Parallels9Driver) SendKeyScanCodes(vmName string, codes ...string) error {
+	var stdout, stderr bytes.Buffer
 
+	args := prepend(vmName, codes)
+	log.Printf("Executing prltype: %#v", args)
+	cmd := exec.Command("prltype", args...)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+
+	stdoutString := strings.TrimSpace(stdout.String())
+	stderrString := strings.TrimSpace(stderr.String())
+
+	if _, ok := err.(*exec.ExitError); ok {
+		err = fmt.Errorf("prltype error: %s", stderrString)
 	}
-	return &Parallels9DriverVm{vm}, nil
+
+	log.Printf("stdout: %s", stdoutString)
+	log.Printf("stderr: %s", stderrString)
+
+	return err
+}
+
+func prepend(head string, tail []string) []string {
+	tmp := make([]string, len(tail)+1)
+	for i := 0; i < len(tail); i++ {
+		tmp[i+1] = tail[i]
+	}
+	tmp[0] = head
+	return tmp
 }

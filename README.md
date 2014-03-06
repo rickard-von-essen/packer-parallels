@@ -23,14 +23,7 @@ Install packer and add the following to ```~/.packerconfig```
    }
 }
 ```
-Then download and install this plugin. Since this depends on [Go Parallelles SDK - C API Wrapper](https://github.com/rickard-von-essen/goprlapi) which in turn requires [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg), download and install it first.
-
-```
-cd $GOPATH/src && git clone https://github.com/rickard-von-essen/packer-parallels
-cd github.com/rickard-von-essen/packer-parallels
-go get -u github.com/mitchellh/gox
-make
-```
+Then download and install this plugin. This depends on [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg), download and install it first.
 
 ## Issues
 If you find any bugs please open a issue at [github](https://github.com/rickard-von-essen/packer-parallels/issues). 

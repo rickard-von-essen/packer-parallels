@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
-	//	"github.com/rickard-von-essen/packer-parallels/common"
+	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
 	"log"
 	"strings"
 	"time"
@@ -20,7 +20,8 @@ type bootCommandTemplateData struct {
 	Name     string
 }
 
-// This step "types" the boot command into the VM via the Parallels Virtualization SDK - C API.
+// This step "types" the boot command into the VM via prltype, built on the
+// Parallels Virtualization SDK - C API.
 //
 // Uses:
 //   config *config
@@ -35,10 +36,10 @@ type stepTypeBootCommand struct{}
 
 func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction {
 	config := state.Get("config").(*config)
-	//	driver := state.Get("driver").(common.Driver)
 	httpPort := state.Get("http_port").(uint)
 	ui := state.Get("ui").(packer.Ui)
-	//	vmName := state.Get("vmName").(string)
+	vmName := state.Get("vmName").(string)
+	driver := state.Get("driver").(parallelscommon.Driver)
 
 	tplData := &bootCommandTemplateData{
 		"10.0.2.2",
@@ -56,18 +57,40 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 			return multistep.ActionHalt
 		}
 
+		codes := []string{}
 		for _, code := range scancodes(command) {
 			if code == "wait" {
+				if err := driver.SendKeyScanCodes(vmName, codes...); err != nil {
+					err := fmt.Errorf("Error sending boot command: %s", err)
+					state.Put("error", err)
+					ui.Error(err.Error())
+					return multistep.ActionHalt
+				}
+				codes = []string{}
 				time.Sleep(1 * time.Second)
 				continue
 			}
 
 			if code == "wait5" {
+				if err := driver.SendKeyScanCodes(vmName, codes...); err != nil {
+					err := fmt.Errorf("Error sending boot command: %s", err)
+					state.Put("error", err)
+					ui.Error(err.Error())
+					return multistep.ActionHalt
+				}
+				codes = []string{}
 				time.Sleep(5 * time.Second)
 				continue
 			}
 
 			if code == "wait10" {
+				if err := driver.SendKeyScanCodes(vmName, codes...); err != nil {
+					err := fmt.Errorf("Error sending boot command: %s", err)
+					state.Put("error", err)
+					ui.Error(err.Error())
+					return multistep.ActionHalt
+				}
+				codes = []string{}
 				time.Sleep(10 * time.Second)
 				continue
 			}
@@ -77,14 +100,15 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 			if _, ok := state.GetOk(multistep.StateCancelled); ok {
 				return multistep.ActionHalt
 			}
-			/*
-				if err := driver.SendKeyScanCode(vmName, code); err != nil {
-					err := fmt.Errorf("Error sending boot command: %s", err)
-					state.Put("error", err)
-					ui.Error(err.Error())
-					return multistep.ActionHalt
-				}
-			*/
+			//intVal, _ := hex.DecodeString(code)
+			codes = append(codes, code)
+		}
+		ui.Say(fmt.Sprintf("Sending scancodes: %#v", codes))
+		if err := driver.SendKeyScanCodes(vmName, codes...); err != nil {
+			err := fmt.Errorf("Error sending boot command: %s", err)
+			state.Put("error", err)
+			ui.Error(err.Error())
+			return multistep.ActionHalt
 		}
 	}
 
@@ -120,16 +144,16 @@ func scancodes(message string) []string {
 	special["<return>"] = []string{"1c", "9c"}
 	special["<tab>"] = []string{"0f", "8f"}
 
-	shiftedChars := "~!@#$%^&*()_+{}|:\"<>?"
+	shiftedChars := "!@#$%^&*()_+{}:\"~|<>?"
 
 	scancodeIndex := make(map[string]uint)
 	scancodeIndex["1234567890-="] = 0x02
 	scancodeIndex["!@#$%^&*()_+"] = 0x02
 	scancodeIndex["qwertyuiop[]"] = 0x10
 	scancodeIndex["QWERTYUIOP{}"] = 0x10
-	scancodeIndex["asdfghjkl;'`"] = 0x1e
+	scancodeIndex["asdfghjkl;´`"] = 0x1e
 	scancodeIndex[`ASDFGHJKL:"~`] = 0x1e
-	scancodeIndex[`\zxcvbnm,./`] = 0x2b
+	scancodeIndex["\\zxcvbnm,./"] = 0x2b
 	scancodeIndex["|ZXCVBNM<>?"] = 0x2b
 	scancodeIndex[" "] = 0x39
 
@@ -189,12 +213,11 @@ func scancodes(message string) []string {
 			}
 
 			scancode = append(scancode, fmt.Sprintf("%02x", scancodeInt))
+			scancode = append(scancode, fmt.Sprintf("%02x", scancodeInt+0x80))
 
 			if keyShift {
 				scancode = append(scancode, "aa")
 			}
-
-			scancode = append(scancode, fmt.Sprintf("%02x", scancodeInt+0x80))
 			log.Printf("Sending char '%c', code '%v', shift %v", r, scancode, keyShift)
 		}
 

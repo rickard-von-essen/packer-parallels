@@ -37,7 +37,7 @@ gox \
     -os="${XC_OS}" \
     -arch="${XC_ARCH}" \
     -ldflags "-X github.com/rickard-von-essen/packer-parallels/packer-parallels.GitCommit ${GIT_COMMIT}${GIT_DIRTY}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/packer-{{.Dir}}" \
+    -output "pkg/{{.OS}}_{{.Arch}}/{{.Dir}}" \
     ./builder-parallels-iso/...
 
 # Reset signal trapping to avoid "Terminated: 15" at the end
