@@ -25,7 +25,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	name := config.VMName
 	path := filepath.Join(".", config.OutputDir) //, fmt.Sprintf("%s.pvm", name)
 
-	commands := make([][]string, 3)
+	commands := make([][]string, 6)
 	commands[0] = []string{
 		"create", name,
 		"--ostype", config.GuestOSType,
@@ -35,6 +35,9 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	}
 	commands[1] = []string{"set", name, "--cpus", "1"}
 	commands[2] = []string{"set", name, "--memsize", "512"}
+	commands[3] = []string{"set", name, "--startup-view", "same"}
+	commands[4] = []string{"set", name, "--on-shutdown", "close"}
+	commands[5] = []string{"set", name, "--on-window-close", "keep-running"}
 
 	ui.Say("Creating virtual machine...")
 	for _, command := range commands {

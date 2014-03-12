@@ -283,7 +283,6 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		},
 		new(stepHTTPServer),
 		new(stepCreateVM),
-		//new(parallelscommon.StepUseDefaults),
 		new(stepCreateDisk),
 		new(stepAttachISO),
 		new(stepAttachParallelsTools),
