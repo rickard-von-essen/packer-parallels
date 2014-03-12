@@ -289,11 +289,11 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		new(stepAttachParallelsTools),
 		new(parallelscommon.StepAttachFloppy),
 		// TODO: This has to be done in a different way for Parallels
-		//&parallelscommon.StepForwardSSH{
-		//	GuestPort:   b.config.SSHPort,
-		//	HostPortMin: b.config.SSHHostPortMin,
-		//	HostPortMax: b.config.SSHHostPortMax,
-		//},
+		&parallelscommon.StepForwardSSH{
+			GuestPort:   b.config.SSHPort,
+			HostPortMin: b.config.SSHHostPortMin,
+			HostPortMax: b.config.SSHHostPortMax,
+		},
 		&parallelscommon.StepPrlctl{
 			Commands: b.config.Prlctl,
 			Tpl:      b.config.tpl,
@@ -303,16 +303,16 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			Headless: b.config.Headless, // TODO: migth work on Enterprise Ed.
 		},
 		new(stepTypeBootCommand),
-		//&common.StepConnectSSH{
-		//	SSHAddress:     parallelscommon.SSHAddress,
-		//	SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
-		//	SSHWaitTimeout: b.config.SSHWaitTimeout,
-		//},
+		&common.StepConnectSSH{
+			SSHAddress:     parallelscommon.SSHAddress,
+			SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
+			SSHWaitTimeout: b.config.SSHWaitTimeout,
+		},
 		//&parallelscommon.StepUploadVersion{
 		//	Path: b.config.PrlctlVersionFile,
 		//},
 		//new(stepUploadParallelsTools),
-		//new(common.StepProvision),
+		new(common.StepProvision),
 		&parallelscommon.StepShutdown{
 			Command: b.config.ShutdownCommand,
 			Timeout: b.config.ShutdownTimeout,

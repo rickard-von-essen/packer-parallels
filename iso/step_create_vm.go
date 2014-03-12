@@ -31,33 +31,27 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 		"--ostype", config.GuestOSType,
 		"--distribution", config.GuestOSDistribution,
 		"--dst", path,
+		"--vmtype", "vm",
 	}
-	//commands[1] = []string{"set", name, "--cpus", "1"}
-	//commands[2] = []string{"set", name, "--memsize", "512"}
+	commands[1] = []string{"set", name, "--cpus", "1"}
+	commands[2] = []string{"set", name, "--memsize", "512"}
 
 	ui.Say("Creating virtual machine...")
-	err := driver.Prlctl("create", name, "--ostype", config.GuestOSType, "--distribution", config.GuestOSDistribution, "--dst", path, "--vmtype", "vm")
-	if err != nil {
-		ui.Error(fmt.Errorf("Error creating VM: %s", err).Error())
-	}
-	ui.Say("Done creating VM!")
-	/*		for _, command := range commands {
-				err := driver.Prlctl(command...)
-				ui.Say(fmt.Sprintf("Doing: %s", command))
-				if err != nil {
-					err := fmt.Errorf("Error creating VM: %s", err)
-					state.Put("error", err)
-					ui.Error(err.Error())
-					return multistep.ActionHalt
-				}
+	for _, command := range commands {
+		err := driver.Prlctl(command...)
+		ui.Say(fmt.Sprintf("Doing: %s", command))
+		if err != nil {
+			err := fmt.Errorf("Error creating VM: %s", err)
+			state.Put("error", err)
+			ui.Error(err.Error())
+			return multistep.ActionHalt
+		}
 
-				// Set the VM name property on the first command
-				if s.vmName == "" {
-					s.vmName = name
-				}
-			}
-	*/
-	s.vmName = name
+		// Set the VM name property on the first command
+		if s.vmName == "" {
+			s.vmName = name
+		}
+	}
 
 	// Set the final name in the state bag so others can use it
 	state.Put("vmName", s.vmName)

@@ -25,9 +25,9 @@ type StepForwardSSH struct {
 }
 
 func (s *StepForwardSSH) Run(state multistep.StateBag) multistep.StepAction {
-	driver := state.Get("driver").(Driver)
+	//driver := state.Get("driver").(Driver)
 	ui := state.Get("ui").(packer.Ui)
-	vmName := state.Get("vmName").(string)
+	//vmName := state.Get("vmName").(string)
 
 	log.Printf("Looking for available SSH port between %d and %d",
 		s.HostPortMin, s.HostPortMax)
@@ -52,18 +52,19 @@ func (s *StepForwardSSH) Run(state multistep.StateBag) multistep.StepAction {
 
 	// Create a forwarded port mapping to the VM
 	ui.Say(fmt.Sprintf("Creating forwarded port mapping for SSH (host port %d)", sshHostPort))
-	command := []string{
-		"modifyvm", vmName,
-		"--natpf1",
-		fmt.Sprintf("packerssh,tcp,127.0.0.1,%d,,%d", sshHostPort, s.GuestPort),
-	}
-	if err := driver.Prlctl(command...); err != nil {
-		err := fmt.Errorf("Error creating port forwarding rule: %s", err)
-		state.Put("error", err)
-		ui.Error(err.Error())
-		return multistep.ActionHalt
-	}
-
+	/*
+	           command := []string{
+	   		"modifyvm", vmName,
+	   		"--natpf1",
+	   		fmt.Sprintf("packerssh,tcp,127.0.0.1,%d,,%d", sshHostPort, s.GuestPort),
+	   	}
+	   	if err := driver.Prlctl(command...); err != nil {
+	   		err := fmt.Errorf("Error creating port forwarding rule: %s", err)
+	   		state.Put("error", err)
+	   		ui.Error(err.Error())
+	   		return multistep.ActionHalt
+	   	}
+	*/
 	// Save the port we're using so that future steps can use it
 	state.Put("sshHostPort", sshHostPort)
 
