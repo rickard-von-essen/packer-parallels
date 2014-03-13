@@ -146,7 +146,6 @@ func (d *Parallels9Driver) SendKeyScanCodes(vmName string, codes ...string) erro
 	var stdout, stderr bytes.Buffer
 
 	args := prepend(vmName, codes)
-	log.Printf("Executing prltype: %#v", args)
 	cmd := exec.Command("prltype", args...)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr

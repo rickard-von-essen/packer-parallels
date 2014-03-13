@@ -54,7 +54,7 @@ PRL_RESULT LogOff(PRL_HANDLE &hServer) {
     PRL_HANDLE hJob, hJobResult = PRL_INVALID_HANDLE;
     PRL_RESULT err, nJobReturnCode = PRL_ERR_UNINITIALIZED;
 
-    nanosleep((struct timespec[]){{1, 500000000}}, NULL);
+    nanosleep((struct timespec[]){{1, 100000000}}, NULL);
 
     hJob = PrlSrv_Logoff(hServer);
     err = PrlJob_Wait(hJob, 1000);
@@ -176,15 +176,14 @@ PRL_RESULT DisconnectFromConsole( PRL_HANDLE vm ) {
 }
 
 PRL_RESULT SendScanCode( PRL_HANDLE vm, int scanCode ) {
-  fprintf(stdout, " %d", scanCode);
-  nanosleep((struct timespec[]){{0, 20000000}}, NULL);
+  nanosleep((struct timespec[]){{0, 10000000}}, NULL);
   PRL_RESULT err;
   if (scanCode < 0x80)
     err = PrlDevKeyboard_SendKeyEvent( vm, scanCode, PKE_PRESS );
   else
     err = PrlDevKeyboard_SendKeyEvent( vm, scanCode - 0x80, PKE_RELEASE );
   if (PRL_FAILED(err)) {
-      fprintf(stdout, "PrlDevKeyboard_SendKeyEvent returned with error: %s.\n", prl_result_to_string(err));
+      fprintf(stderr, "PrlDevKeyboard_SendKeyEvent returned with error: %s.\n", prl_result_to_string(err));
       PrlApi_Deinit();
       PrlHandle_Free( vm );
   }
@@ -203,7 +202,6 @@ int main( int argc, char **argv ) {
   int scanCodes [argc - 1];
   for (int i = 2; i < argc; i++) {
     scanCodes[i - 2] = strtol(argv[i], NULL, 16);
-    //scanCodes[i - 2] = atoi(argv[i]);
   }
 
   PRL_HANDLE hServer, hVm = PRL_INVALID_HANDLE;
@@ -219,13 +217,11 @@ int main( int argc, char **argv ) {
   if (PRL_FAILED(err))
     return err;
 
-  fprintf(stdout, "Connected to console for VM: %s. Sending scancode(s) [", vmName);
   for (int i = 0; i < argc - 2; i++) {
     err = SendScanCode(hVm, scanCodes[i]);
     if (PRL_FAILED(err))
       return err;
   }
-  fprintf(stdout, " ]\n\n");
 
   err = DisconnectFromConsole(hVm);
   if (PRL_FAILED(err))

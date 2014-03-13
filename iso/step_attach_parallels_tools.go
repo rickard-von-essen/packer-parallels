@@ -69,7 +69,6 @@ func (s *stepAttachParallelsTools) Cleanup(state multistep.StateBag) {
 	ui := state.Get("ui").(packer.Ui)
 	vmName := state.Get("vmName").(string)
 
-	// TODO Is this correct?
 	command := []string{
 		"set", vmName,
 		"--device-set", "cdrom:0:0",
