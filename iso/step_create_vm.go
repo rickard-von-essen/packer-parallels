@@ -42,7 +42,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	ui.Say("Creating virtual machine...")
 	for _, command := range commands {
 		err := driver.Prlctl(command...)
-		ui.Say(fmt.Sprintf("Doing: %s", command))
+		ui.Say(fmt.Sprintf("Doing: prlctl %s", command))
 		if err != nil {
 			err := fmt.Errorf("Error creating VM: %s", err)
 			state.Put("error", err)

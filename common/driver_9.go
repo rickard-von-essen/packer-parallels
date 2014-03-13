@@ -116,7 +116,10 @@ func (d *Parallels9Driver) Prlctl(args ...string) error {
 }
 
 func (d *Parallels9Driver) Verify() error {
-	log.Printf("Verifying Prlctl by doing nothing.")
+	version, _ := d.Version()
+	if !strings.HasPrefix(version, "9.") {
+		return fmt.Errorf("The packer-parallels builder plugin only supports Parallels Desktop v. 9. You have: %s!\n", version)
+	}
 	return nil
 }
 
@@ -130,16 +133,16 @@ func (d *Parallels9Driver) Version() (string, error) {
 	}
 
 	versionOutput := strings.TrimSpace(stdout.String())
-	log.Printf("prlctl --version output: %s", versionOutput)
+	re := regexp.MustCompile("prlctl version ([0-9\\.]+)")
+	verMatch := re.FindAllStringSubmatch(versionOutput, 1)
 
-	versionRe := regexp.MustCompile("[^.0-9]")
-	matches := versionRe.Split(versionOutput, 2)
-	if len(matches) == 0 || matches[0] == "" {
-		return "", fmt.Errorf("No version found: %s", versionOutput)
+	if len(verMatch) != 1 {
+		return "", fmt.Errorf("prlctl version not found!\n")
 	}
 
-	log.Printf("prlctl version: %s", matches[0])
-	return matches[0], nil
+	version := verMatch[0][1]
+	log.Printf("prlctl version: %s\n", version)
+	return version, nil
 }
 
 func (d *Parallels9Driver) SendKeyScanCodes(vmName string, codes ...string) error {
@@ -176,7 +179,7 @@ func prepend(head string, tail []string) []string {
 func (d *Parallels9Driver) Mac(vmName string) (string, error) {
 	var stdout bytes.Buffer
 
-	cmd := exec.Command("prlctl", "list", "-i", vmName)
+	cmd := exec.Command(d.PrlctlPath, "list", "-i", vmName)
 	cmd.Stdout = &stdout
 	if err := cmd.Run(); err != nil {
 		log.Printf("MAC address for NIC: nic0 on Virtual Machine: %s not found!\n", vmName)

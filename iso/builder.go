@@ -94,7 +94,7 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	}
 
 	if b.config.ParallelsToolsPath == "" {
-		b.config.ParallelsToolsPath = "prl-tools-lin.iso"
+		b.config.ParallelsToolsPath = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-lin.iso"
 	}
 
 	if b.config.HardDriveInterface == "" {
@@ -119,16 +119,17 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 
 	// Errors
 	templates := map[string]*string{
-		"guest_tools_mode":      &b.config.ParallelsToolsMode,
-		"guest_tools_sha256":    &b.config.ParallelsToolsSHA256,
-		"guest_os_type":         &b.config.GuestOSType,
-		"guest_os_distribution": &b.config.GuestOSDistribution,
-		"hard_drive_interface":  &b.config.HardDriveInterface,
-		"http_directory":        &b.config.HTTPDir,
-		"iso_checksum":          &b.config.ISOChecksum,
-		"iso_checksum_type":     &b.config.ISOChecksumType,
-		"iso_url":               &b.config.RawSingleISOUrl,
-		"vm_name":               &b.config.VMName,
+		"parallels_tools_mode":   &b.config.ParallelsToolsMode,
+		"parallels_tools_sha256": &b.config.ParallelsToolsSHA256,
+		"parallels_tools_path":   &b.config.ParallelsToolsPath,
+		"guest_os_type":          &b.config.GuestOSType,
+		"guest_os_distribution":  &b.config.GuestOSDistribution,
+		"hard_drive_interface":   &b.config.HardDriveInterface,
+		"http_directory":         &b.config.HTTPDir,
+		"iso_checksum":           &b.config.ISOChecksum,
+		"iso_checksum_type":      &b.config.ISOChecksumType,
+		"iso_url":                &b.config.RawSingleISOUrl,
+		"vm_name":                &b.config.VMName,
 	}
 
 	for n, ptr := range templates {
@@ -150,7 +151,7 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	}
 
 	validates := map[string]*string{
-		"guest_tools_path": &b.config.ParallelsToolsPath,
+		"parallels_tools_path": &b.config.ParallelsToolsPath,
 	}
 
 	for n, ptr := range validates {
@@ -350,7 +351,6 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		return nil, errors.New("Build was halted.")
 	}
 
-	//return parallelscommon.NewArtifact("test-dir")
 	return parallelscommon.NewArtifact(b.config.OutputDir)
 }
 
