@@ -2,13 +2,13 @@
 
 This is a custom builder plugin for [Packer](http://www.packer.io/) using [Parallels Desktop for Mac](http://www.parallels.com/products/desktop/).
 
-**Current status: Alpha - BROKEN!**
+**Current status: in Beta!**
 
 ![Parallels Logo](imgs/parallels_small.png)
 
 
 ## Status
-This is currently under development. Don't expect it to work. The only reason to run this plugin is if you wont to contribute to its development.
+This is currently under development. It might work but don't count on it. Some feaures are untested or currently broken. If you use this be prepaired to crash, debug and report issues (include debug logs) or submit patches (pull requests).
 
 ## Documentation
 TODO
@@ -29,7 +29,7 @@ Then download and install this plugin. This depends on [Parallels Virtualization
 If you find any bugs please open a issue at [github](https://github.com/rickard-von-essen/packer-parallels/issues). 
 
 ## Contributing
-If you have any improvments open a pull request at [github](https://github.com/rickard-von-essen/packer-parallels/pulls). 
+If you have any improvements open a pull request at [github](https://github.com/rickard-von-essen/packer-parallels/pulls). 
 
 ## License
 

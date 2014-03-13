@@ -25,13 +25,7 @@ func (s *StepRemoveDevices) Run(state multistep.StateBag) multistep.StepAction {
 	// Remove the attached floppy disk, if it exists
 	if _, ok := state.GetOk("floppy_path"); ok {
 		ui.Message("Removing floppy drive...")
-		command := []string{
-			"storageattach", vmName,
-			"--storagectl", "Floppy Controller",
-			"--port", "0",
-			"--device", "0",
-			"--medium", "none",
-		}
+		command := []string{"set", vmName, "--device-del", "fdd"}
 		if err := driver.Prlctl(command...); err != nil {
 			err := fmt.Errorf("Error removing floppy: %s", err)
 			state.Put("error", err)
@@ -41,13 +35,7 @@ func (s *StepRemoveDevices) Run(state multistep.StateBag) multistep.StepAction {
 	}
 
 	if _, ok := state.GetOk("attachedIso"); ok {
-		command := []string{
-			"storageattach", vmName,
-			"--storagectl", "IDE Controller",
-			"--port", "0",
-			"--device", "1",
-			"--medium", "none",
-		}
+		command := []string{"set", vmName, "--device-del", "cdrom0"}
 
 		if err := driver.Prlctl(command...); err != nil {
 			err := fmt.Errorf("Error detaching ISO: %s", err)

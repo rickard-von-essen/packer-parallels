@@ -311,10 +311,10 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			Command: b.config.ShutdownCommand,
 			Timeout: b.config.ShutdownTimeout,
 		},
-		//new(parallelscommon.StepRemoveDevices),
-		/*&parallelscommon.StepExport{
+		new(parallelscommon.StepRemoveDevices),
+		&parallelscommon.StepExport{
 			OutputDir: b.config.OutputDir,
-		},*/
+		},
 	}
 
 	// Setup the state bag
