@@ -10,8 +10,20 @@ import (
 )
 
 func SSHAddress(state multistep.StateBag) (string, error) {
-	sshHostPort := state.Get("sshHostPort").(uint)
-	return fmt.Sprintf("127.0.0.1:%d", sshHostPort), nil
+	vmName := state.Get("vmName").(string)
+	driver := state.Get("driver").(Driver)
+
+	mac, err := driver.Mac(vmName)
+	if err != nil {
+		return "", err
+	}
+
+	ip, err := driver.IpAddress(mac)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s:22", ip), nil
 }
 
 func SSHConfigFunc(config SSHConfig) func(multistep.StateBag) (*gossh.ClientConfig, error) {

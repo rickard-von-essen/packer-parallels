@@ -173,3 +173,54 @@ func prepend(head string, tail []string) []string {
 	tmp[0] = head
 	return tmp
 }
+
+func (d *Parallels9Driver) Mac(vmName string) (string, error) {
+	var stdout bytes.Buffer
+
+	cmd := exec.Command("prlctl", "list", "-i", vmName)
+	cmd.Stdout = &stdout
+	if err := cmd.Run(); err != nil {
+		log.Printf("MAC address for NIC: nic0 on Virtual Machine: %s not found!\n", vmName)
+		return "", err
+	}
+
+	stdoutString := strings.TrimSpace(stdout.String())
+	re := regexp.MustCompile("net0.* mac=([0-9A-F]{12}) card=.*")
+	macMatch := re.FindAllStringSubmatch(stdoutString, 1)
+
+	if len(macMatch) != 1 {
+		return "", fmt.Errorf("MAC address for NIC: nic0 on Virtual Machine: %s not found!\n", vmName)
+	}
+
+	mac := macMatch[0][1]
+	log.Printf("Found MAC address for NIC: net0 - %s\n", mac)
+	return mac, nil
+}
+
+// Finds the IP address of a VM connected that uses DHCP by its MAC address
+func (d *Parallels9Driver) IpAddress(mac string) (string, error) {
+	var stdout bytes.Buffer
+	dhcp_lease_file := "/Library/Preferences/Parallels/parallels_dhcp_leases"
+
+	if len(mac) != 12 {
+		return "", fmt.Errorf("Not a valid MAC address: %s. It should be exactly 12 digits.", mac)
+	}
+
+	cmd := exec.Command("grep", "-i", mac, dhcp_lease_file)
+	cmd.Stdout = &stdout
+	if err := cmd.Run(); err != nil {
+		return "", err
+	}
+
+	stdoutString := strings.TrimSpace(stdout.String())
+	re := regexp.MustCompile("(.*)=.*")
+	ipMatch := re.FindAllStringSubmatch(stdoutString, 1)
+
+	if len(ipMatch) != 1 {
+		return "", fmt.Errorf("IP lease not found for MAC address %s in: %s\n", mac, dhcp_lease_file)
+	}
+
+	ip := ipMatch[0][1]
+	log.Printf("Found IP lease: %s for MAC address %s\n", ip, mac)
+	return ip, nil
+}

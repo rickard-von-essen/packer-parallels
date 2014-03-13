@@ -43,6 +43,12 @@ type Driver interface {
 
 	// Send scancodes to the vm using the prltype tool.
 	SendKeyScanCodes(string, ...string) error
+
+	// Finds the MAC address of the NIC nic0
+	Mac(string) (string, error)
+
+	// Finds the IP address of a VM connected that uses DHCP by its MAC address
+	IpAddress(string) (string, error)
 }
 
 func NewDriver() (Driver, error) {

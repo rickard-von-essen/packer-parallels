@@ -287,12 +287,6 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		new(stepAttachISO),
 		new(stepAttachParallelsTools),
 		new(parallelscommon.StepAttachFloppy),
-		// TODO: This has to be done in a different way for Parallels
-		&parallelscommon.StepForwardSSH{
-			GuestPort:   b.config.SSHPort,
-			HostPortMin: b.config.SSHHostPortMin,
-			HostPortMax: b.config.SSHHostPortMax,
-		},
 		&parallelscommon.StepPrlctl{
 			Commands: b.config.Prlctl,
 			Tpl:      b.config.tpl,
