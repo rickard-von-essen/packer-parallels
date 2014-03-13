@@ -94,7 +94,7 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	}
 
 	if b.config.ParallelsToolsPath == "" {
-		b.config.ParallelsToolsPath = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-lin.iso"
+		b.config.ParallelsToolsPath = "\"/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-lin.iso\""
 	}
 
 	if b.config.HardDriveInterface == "" {

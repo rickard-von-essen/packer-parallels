@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
-	//parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
+	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
 	"log"
-	//"os"
+	"os"
 )
 
 type toolsPathTemplate struct {
@@ -17,9 +17,9 @@ type toolsPathTemplate struct {
 type stepUploadParallelsTools struct{}
 
 func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepAction {
-	//comm := state.Get("communicator").(packer.Communicator)
+	comm := state.Get("communicator").(packer.Communicator)
 	config := state.Get("config").(*config)
-	//driver := state.Get("driver").(parallelscommon.Driver)
+	driver := state.Get("driver").(parallelscommon.Driver)
 	ui := state.Get("ui").(packer.Ui)
 
 	// If we're attaching then don't do this, since we attached.
@@ -29,8 +29,7 @@ func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepA
 	}
 
 	// Get the Parallels Tools path since we're doing it
-	ui.Say(fmt.Sprint("STATE: %v\n", state))
-	/*toolsPath := state.Get("parallels_tools_path").(string)
+	toolsPath := config.ParallelsToolsPath
 
 	version, err := driver.Version()
 	if err != nil {
@@ -61,7 +60,7 @@ func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepA
 		state.Put("error", fmt.Errorf("Error uploading Parallels Tools: %s", err))
 		return multistep.ActionHalt
 	}
-	*/
+
 	return multistep.ActionContinue
 }
 
