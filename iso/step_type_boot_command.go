@@ -118,7 +118,6 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 			if _, ok := state.GetOk(multistep.StateCancelled); ok {
 				return multistep.ActionHalt
 			}
-			//intVal, _ := hex.DecodeString(code)
 			codes = append(codes, code)
 		}
 		ui.Say(fmt.Sprintf("Sending scancodes: %#v", codes))

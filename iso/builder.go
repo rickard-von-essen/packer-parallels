@@ -301,10 +301,10 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			SSHConfig:      parallelscommon.SSHConfigFunc(b.config.SSHConfig),
 			SSHWaitTimeout: b.config.SSHWaitTimeout,
 		},
-		//&parallelscommon.StepUploadVersion{
-		//	Path: b.config.PrlctlVersionFile,
-		//},
-		//new(stepUploadParallelsTools),
+		&parallelscommon.StepUploadVersion{
+			Path: b.config.PrlctlVersionFile,
+		},
+		new(stepUploadParallelsTools),
 		new(common.StepProvision),
 		&parallelscommon.StepShutdown{
 			Command: b.config.ShutdownCommand,

@@ -23,7 +23,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 
 	name := config.VMName
-	path := filepath.Join(".", config.OutputDir) //, fmt.Sprintf("%s.pvm", name)
+	path := filepath.Join(".", config.OutputDir)
 
 	commands := make([][]string, 6)
 	commands[0] = []string{
@@ -62,6 +62,7 @@ func (s *stepCreateVM) Run(state multistep.StateBag) multistep.StepAction {
 }
 
 func (s *stepCreateVM) Cleanup(state multistep.StateBag) {
+	// TODO
 	/*
 	     if s.vmName == "" {
 	   		return
