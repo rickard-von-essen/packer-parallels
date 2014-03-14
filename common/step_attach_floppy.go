@@ -5,7 +5,6 @@ import (
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
 	"log"
-	"os"
 )
 
 // This step attaches a floppy to the virtual machine.
@@ -53,23 +52,4 @@ func (s *StepAttachFloppy) Run(state multistep.StateBag) multistep.StepAction {
 	return multistep.ActionContinue
 }
 
-func (s *StepAttachFloppy) Cleanup(state multistep.StateBag) {
-	if s.floppyPath == "" {
-		return
-	}
-
-	// Delete the floppy disk
-	defer os.Remove(s.floppyPath)
-
-	driver := state.Get("driver").(Driver)
-	vmName := state.Get("vmName").(string)
-
-	command := []string{
-		"set", vmName,
-		"--device-del", s.floppyPath,
-	}
-
-	if err := driver.Prlctl(command...); err != nil {
-		log.Printf("Error removing floppy: %s", err)
-	}
-}
+func (s *StepAttachFloppy) Cleanup(state multistep.StateBag) {}
