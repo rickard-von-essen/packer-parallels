@@ -2,9 +2,11 @@
 
 This is a custom builder plugin for [Packer](http://www.packer.io/) using [Parallels Desktop for Mac](http://www.parallels.com/products/desktop/).
 
+![Parallels Logo](imgs/parallels_small.png)
+
 **Current status: in Beta!**
 
-![Parallels Logo](imgs/parallels_small.png)
+[![Build Status](https://travis-ci.org/rickard-von-essen/packer-parallels.png?branch=master)](https://travis-ci.org/rickard-von-essen/packer-parallels)
 
 
 ## Status
