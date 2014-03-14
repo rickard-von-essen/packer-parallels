@@ -36,29 +36,10 @@ func (s *stepAttachISO) Run(state multistep.StateBag) multistep.StepAction {
 		return multistep.ActionHalt
 	}
 
-	// Track the path so that we can unregister it from Parallels later
-	s.diskPath = isoPath
-
 	// Set some state so we know to remove
 	state.Put("attachedIso", true)
 
 	return multistep.ActionContinue
 }
 
-func (s *stepAttachISO) Cleanup(state multistep.StateBag) {
-	if s.diskPath == "" {
-		return
-	}
-
-	driver := state.Get("driver").(parallelscommon.Driver)
-	vmName := state.Get("vmName").(string)
-
-	command := []string{
-		"set", vmName,
-		"--device-del", "cdrom0",
-	}
-
-	// Remove the ISO. Note that this will probably fail since
-	// stepRemoveDevices does this as well. No big deal.
-	driver.Prlctl(command...)
-}
+func (s *stepAttachISO) Cleanup(state multistep.StateBag) {}

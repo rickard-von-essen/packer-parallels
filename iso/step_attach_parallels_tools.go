@@ -36,15 +36,13 @@ func (s *stepAttachParallelsTools) Run(state multistep.StateBag) multistep.StepA
 	}
 
 	// Get the parallels tools path since we're doing it
-	toolsPath := state.Get("parallels_tools_path").(string)
+	toolsPath := config.ParallelsToolsPath
 
 	// Attach the guest additions to the computer
 	log.Println("Attaching Parallels Tools ISO onto IDE controller...")
 	command := []string{
 		"set", vmName,
 		"--device-add", "cdrom",
-		"--position", "0:0",
-		"--connect",
 		"--image", toolsPath,
 	}
 	if err := driver.Prlctl(command...); err != nil {
@@ -54,29 +52,10 @@ func (s *stepAttachParallelsTools) Run(state multistep.StateBag) multistep.StepA
 		return multistep.ActionHalt
 	}
 
-	// Track the path so that we can unregister it from Parallels later
-	s.toolsPath = toolsPath
+	// Set some state so we know to remove
+	state.Put("attachedToolsIso", true)
 
 	return multistep.ActionContinue
 }
 
-func (s *stepAttachParallelsTools) Cleanup(state multistep.StateBag) {
-	if s.toolsPath == "" {
-		return
-	}
-
-	driver := state.Get("driver").(parallelscommon.Driver)
-	ui := state.Get("ui").(packer.Ui)
-	vmName := state.Get("vmName").(string)
-
-	command := []string{
-		"set", vmName,
-		"--device-set", "cdrom:0:0",
-		"--position", "0:0",
-		"--disconnect",
-	}
-
-	if err := driver.Prlctl(command...); err != nil {
-		ui.Error(fmt.Sprintf("Error unregistering guest additions: %s", err))
-	}
-}
+func (s *stepAttachParallelsTools) Cleanup(state multistep.StateBag) {}
