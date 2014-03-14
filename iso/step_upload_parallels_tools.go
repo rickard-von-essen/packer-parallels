@@ -7,6 +7,7 @@ import (
 	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
 	"log"
 	"os"
+	"strings"
 )
 
 type toolsPathTemplate struct {
@@ -30,6 +31,11 @@ func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepA
 
 	// Get the Parallels Tools path since we're doing it
 	toolsPath := config.ParallelsToolsPath
+
+	// Warning for https://github.com/mitchellh/packer/issues/951
+	if strings.Contains(toolsPath, " ") {
+		log.Printf("Space(s) found in tools path. You will hit https://github.com/mitchellh/packer/issues/951")
+	}
 
 	version, err := driver.Version()
 	if err != nil {
