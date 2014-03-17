@@ -12,9 +12,6 @@ import (
 // versions out of the builder steps, so sometimes the methods are
 // extremely specific.
 type Driver interface {
-	// Create a SATA controller.
-	CreateSATAController(vm string, controller string) error
-
 	// Delete a VM by name
 	Delete(string) error
 
@@ -26,9 +23,6 @@ type Driver interface {
 
 	// Stop stops a running machine, forcefully.
 	Stop(string) error
-
-	// Use default settings from Parallels
-	UseDefaults(string) error
 
 	// Prlctl executes the given Prlctl command
 	Prlctl(...string) error

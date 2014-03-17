@@ -17,27 +17,6 @@ type Parallels9Driver struct {
 	PrlctlPath string
 }
 
-func (d *Parallels9Driver) CreateSATAController(vmName string, name string) error {
-	version, err := d.Version()
-	if err != nil {
-		return err
-	}
-
-	portCountArg := "--sataportcount"
-	if strings.HasPrefix(version, "4.3") {
-		portCountArg = "--portcount"
-	}
-
-	command := []string{
-		"storagectl", vmName,
-		"--name", name,
-		"--add", "sata",
-		portCountArg, "1",
-	}
-	command = []string{}
-	return d.Prlctl(command...)
-}
-
 func (d *Parallels9Driver) Delete(name string) error {
 	return d.Prlctl("delete", name)
 }
@@ -127,14 +106,6 @@ func (d *Parallels9Driver) Stop(name string) error {
 
 	// We sleep here for a little bit to let the session "unlock"
 	time.Sleep(2 * time.Second)
-
-	return nil
-}
-
-func (d *Parallels9Driver) UseDefaults(name string) error {
-	if err := d.Prlctl("set", name, "--usedefanswers", "on"); err != nil {
-		return err
-	}
 
 	return nil
 }
