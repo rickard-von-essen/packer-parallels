@@ -3,7 +3,9 @@ package common
 import (
 	"bytes"
 	"fmt"
+	"github.com/going/toolkit/xmlpath"
 	"log"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -40,13 +42,57 @@ func (d *Parallels9Driver) Delete(name string) error {
 	return d.Prlctl("delete", name)
 }
 
-func (d *Parallels9Driver) Import(name, path string) error {
-	args := []string{
-		"clone", path,
-		"--regenerate-src-uuid",
+func (d *Parallels9Driver) Import(name, srcPath, dstDir string) error {
+
+	err := d.Prlctl("register", srcPath, "--preserve-uuid")
+	if err != nil {
+		return err
 	}
 
-	return d.Prlctl(args...)
+	srcId, err := getVmId(srcPath)
+	if err != nil {
+		return err
+	}
+
+	srcMac, err := getFirtsMacAddress(srcPath)
+	if err != nil {
+		return err
+	}
+
+	err = d.Prlctl("clone", srcId, "--name", name, "--dst", dstDir)
+	if err != nil {
+		return err
+	}
+
+	err = d.Prlctl("unregister", srcId)
+	if err != nil {
+		return err
+	}
+
+	err = d.Prlctl("set", name, "--device-set", "net0", "--mac", srcMac)
+	return nil
+}
+
+func getVmId(path string) (string, error) {
+	return getConfigValueFromXpath(path, "/ParallelsVirtualMachine/Identification/VmUuid")
+}
+
+func getFirtsMacAddress(path string) (string, error) {
+	return getConfigValueFromXpath(path, "/ParallelsVirtualMachine/Hardware/NetworkAdapter[@id='0']/MAC")
+}
+
+func getConfigValueFromXpath(path, xpath string) (string, error) {
+	file, err := os.Open(path + "/config.pvs")
+	if err != nil {
+		return "", err
+	}
+	xpathComp := xmlpath.MustCompile(xpath)
+	root, err := xmlpath.Parse(file)
+	if err != nil {
+		return "", err
+	}
+	value, _ := xpathComp.String(root)
+	return value, nil
 }
 
 func (d *Parallels9Driver) IsRunning(name string) (bool, error) {
