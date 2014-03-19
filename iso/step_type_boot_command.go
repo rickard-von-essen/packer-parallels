@@ -42,12 +42,7 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 	driver := state.Get("driver").(parallelscommon.Driver)
 
 	// Determine the host IP
-	var ipFinder HostIPFinder
-	if finder, ok := driver.(HostIPFinder); ok {
-		ipFinder = finder
-	} else {
-		ipFinder = &IfconfigIPFinder{Device: "vmnet8"}
-	}
+	ipFinder := &IfconfigIPFinder{Device: "en0"}
 
 	hostIp, err := ipFinder.HostIP()
 	if err != nil {
@@ -57,7 +52,7 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 		return multistep.ActionHalt
 	}
 
-	log.Printf("Host IP for the Parallels machine: %s", hostIp)
+	ui.Say(fmt.Sprintf("Host IP for the Parallels machine: %s", hostIp))
 
 	tplData := &bootCommandTemplateData{
 		hostIp,
