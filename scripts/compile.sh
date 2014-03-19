@@ -37,7 +37,7 @@ gox \
     -os="${XC_OS}" \
     -arch="${XC_ARCH}" \
     -ldflags "-X github.com/rickard-von-essen/packer-parallels/packer-parallels.GitCommit ${GIT_COMMIT}${GIT_DIRTY}" \
-    -output "pkg/{{.OS}}_{{.Arch}}/{{.Dir}}" \
+    -output "pkg/{{.OS}}_{{.Arch}}/packer-{{.Dir}}" \
     ./plugin/builder-parallels-iso/... \
     ./plugin/builder-parallels-pvm/... \
     ./plugin/post-processor-vagrant/...

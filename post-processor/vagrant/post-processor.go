@@ -64,6 +64,8 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 }
 
 func (p *PostProcessor) PostProcess(ui packer.Ui, artifact packer.Artifact) (packer.Artifact, bool, error) {
+	ui.Say("Running patched vagrant post-processor for Parallels")
+
 	name, ok := builtins[artifact.BuilderId()]
 	if !ok {
 		return nil, false, fmt.Errorf(
