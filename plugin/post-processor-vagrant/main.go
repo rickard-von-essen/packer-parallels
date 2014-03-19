@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/mitchellh/packer/packer/plugin"
-	"github.com/mitchellh/packer/post-processor/vagrant"
+	"github.com/rickard-von-essen/packer-parallels/post-processor/vagrant"
 )
 
 func main() {
