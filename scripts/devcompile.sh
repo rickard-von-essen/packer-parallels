@@ -59,3 +59,4 @@ export XC_OS=$(go env GOOS)
 IFS=: MAIN_GOPATH=( $GOPATH )
 cp pkg/${XC_OS}_${XC_ARCH}/* ${MAIN_GOPATH}/bin
 cp bin/prltype ${MAIN_GOPATH}/bin
+rm bin/prltype && rmdir bin

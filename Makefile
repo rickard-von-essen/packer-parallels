@@ -8,7 +8,7 @@ LDFLAGS=-framework ParallelsVirtualizationSDK
 all: deps
 	@mkdir -p bin/
 	@echo "$(OK_COLOR)==> Building$(NO_COLOR)"
-	@gcc -o bin/prltype $(LDFLAGS) cpp/prltype.cpp
+	@gcc -o bin/prltype $(LDFLAGS) builder/parallels/cpp/prltype.cpp
 	@bash --norc -i ./scripts/devcompile.sh
 
 deps:
@@ -28,7 +28,7 @@ format:
 	go fmt ./...
 
 test: deps
-	@echo "$(OK_COLOR)==> Testing Parallels Packer Build plugin ...$(NO_COLOR)"
+	@echo "$(OK_COLOR)==> Testing Parallels Packer plugins ...$(NO_COLOR)"
 	go test ./...
 
 .PHONY: all clean deps format test updatedeps

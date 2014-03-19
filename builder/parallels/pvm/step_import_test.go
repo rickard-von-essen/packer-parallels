@@ -2,7 +2,7 @@ package pvm
 
 import (
 	"github.com/mitchellh/multistep"
-	parallelscommon "github.com/rickard-von-essen/packer-parallels/common"
+	parallelscommon "github.com/rickard-von-essen/packer-parallels/builder/parallels/common"
 	"testing"
 )
 

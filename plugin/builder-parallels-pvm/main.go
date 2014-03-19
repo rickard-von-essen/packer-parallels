@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/mitchellh/packer/packer/plugin"
-	"github.com/rickard-von-essen/packer-parallels/iso"
+	"github.com/rickard-von-essen/packer-parallels/builder/parallels/pvm"
 )
 
 func main() {
@@ -10,6 +10,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	server.RegisterBuilder(new(iso.Builder))
+	server.RegisterBuilder(new(pvm.Builder))
 	server.Serve()
 }
