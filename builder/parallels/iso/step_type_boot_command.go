@@ -42,7 +42,7 @@ func (s *stepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction
 	driver := state.Get("driver").(parallelscommon.Driver)
 
 	// Determine the host IP
-	ipFinder := &IfconfigIPFinder{Device: "en0"}
+	ipFinder := &IfconfigIPFinder{Devices: []string{"en0", "en1", "en2", "en3", "en4", "en5", "en6", "en7", "en8", "en9"}}
 
 	hostIp, err := ipFinder.HostIP()
 	if err != nil {

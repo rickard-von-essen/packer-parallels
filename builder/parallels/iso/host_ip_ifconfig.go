@@ -10,7 +10,7 @@ import (
 
 // IfconfigIPFinder finds the host IP based on the output of `ifconfig`.
 type IfconfigIPFinder struct {
-	Device string
+	Devices []string
 }
 
 func (f *IfconfigIPFinder) HostIP() (string, error) {
@@ -30,26 +30,26 @@ func (f *IfconfigIPFinder) HostIP() (string, error) {
 		}
 	}
 
-	stdout := new(bytes.Buffer)
+	for _, device := range f.Devices {
+		stdout := new(bytes.Buffer)
 
-	cmd := exec.Command(ifconfigPath, f.Device)
-	cmd.Env = append(cmd.Env, os.Environ()...)
+		cmd := exec.Command(ifconfigPath, device)
+		cmd.Env = append(cmd.Env, os.Environ()...)
 
-	// Force LANG=C so that the output is what we expect it to be
-	// despite the locale.
-	cmd.Env = append(cmd.Env, "LANG=C")
+		// Force LANG=C so that the output is what we expect it to be
+		// despite the locale.
+		cmd.Env = append(cmd.Env, "LANG=C")
 
-	cmd.Stdout = stdout
-	cmd.Stderr = new(bytes.Buffer)
-	if err := cmd.Run(); err != nil {
-		return "", err
+		cmd.Stdout = stdout
+		cmd.Stderr = new(bytes.Buffer)
+
+		if err := cmd.Run(); err == nil {
+			re := regexp.MustCompile(`inet\s+(?:addr:)?(.+?)\s`)
+			matches := re.FindStringSubmatch(stdout.String())
+			if matches != nil {
+				return matches[1], nil
+			}
+		}
 	}
-
-	re := regexp.MustCompile(`inet\s+(?:addr:)?(.+?)\s`)
-	matches := re.FindStringSubmatch(stdout.String())
-	if matches == nil {
-		return "", errors.New("IP not found in ifconfig output...")
-	}
-
-	return matches[1], nil
+	return "", errors.New("IP not found in ifconfig output...")
 }
