@@ -5,7 +5,6 @@ import (
 	"github.com/mitchellh/multistep"
 	"github.com/mitchellh/packer/packer"
 	parallelscommon "github.com/rickard-von-essen/packer-parallels/builder/parallels/common"
-	//	"path/filepath"
 	"strconv"
 )
 
@@ -19,15 +18,11 @@ func (s *stepCreateDisk) Run(state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 	vmName := state.Get("vmName").(string)
 
-	// TODO: This should be within OutputDir
-	// path := filepath.Join(config.OutputDir, fmt.Sprintf("%s-hdd0.hdd", config.VMName))
-
 	command := []string{
 		"set", vmName,
 		"--device-set", "hdd0",
 		"--size", strconv.FormatUint(uint64(config.DiskSize), 10),
-		"--iface", "sata",
-		//		"--image", path,
+		"--iface", config.HardDriveInterface,
 	}
 
 	ui.Say("Creating hard drive...")

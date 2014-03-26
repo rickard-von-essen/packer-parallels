@@ -57,9 +57,7 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 			Name:       b.config.VMName,
 			SourcePath: b.config.SourcePath,
 		},
-		/*
-			new(stepAttachGuestAdditions),
-		*/
+		// new(stepAttachParallelsTools),
 		new(parallelscommon.StepAttachFloppy),
 		&parallelscommon.StepPrlctl{
 			Commands: b.config.Prlctl,
@@ -77,9 +75,7 @@ func (b *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packe
 		&parallelscommon.StepUploadVersion{
 			Path: b.config.PrlctlVersionFile,
 		},
-		/*
-			new(stepUploadGuestAdditions),
-		*/
+		//new(stepUploadParallelsTools),
 		new(common.StepProvision),
 		&parallelscommon.StepShutdown{
 			Command: b.config.ShutdownCommand,

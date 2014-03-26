@@ -41,6 +41,7 @@ type config struct {
 	DiskSize             uint     `mapstructure:"disk_size"`
 	ParallelsToolsMode   string   `mapstructure:"parallels_tools_mode"`
 	ParallelsToolsPath   string   `mapstructure:"parallels_tools_path"`
+	ParallelsToolsUrl    string   `mapstructure:"parallels_tools_url"`
 	ParallelsToolsSHA256 string   `mapstructure:"parallels_tools_sha256"`
 	GuestOSType          string   `mapstructure:"guest_os_type"`
 	GuestOSDistribution  string   `mapstructure:"guest_os_distribution"`
@@ -94,7 +95,11 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	}
 
 	if b.config.ParallelsToolsPath == "" {
-		b.config.ParallelsToolsPath = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-lin.iso"
+		b.config.ParallelsToolsPath = "prl-tools.iso"
+	}
+
+	if b.config.ParallelsToolsUrl == "" {
+		b.config.ParallelsToolsUrl = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-other.iso"
 	}
 
 	if b.config.HardDriveInterface == "" {
@@ -102,7 +107,11 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	}
 
 	if b.config.GuestOSType == "" {
-		b.config.GuestOSType = "linux"
+		b.config.GuestOSType = "other"
+	}
+
+	if b.config.GuestOSDistribution == "" {
+		b.config.GuestOSDistribution = "other"
 	}
 
 	if b.config.HTTPPortMin == 0 {
@@ -120,6 +129,7 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	// Errors
 	templates := map[string]*string{
 		"parallels_tools_mode":   &b.config.ParallelsToolsMode,
+		"parallels_tools_url":    &b.config.ParallelsToolsUrl,
 		"parallels_tools_sha256": &b.config.ParallelsToolsSHA256,
 		"parallels_tools_path":   &b.config.ParallelsToolsPath,
 		"guest_os_type":          &b.config.GuestOSType,
@@ -168,9 +178,9 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 		}
 	}
 
-	if b.config.HardDriveInterface != "ide" && b.config.HardDriveInterface != "sata" {
+	if b.config.HardDriveInterface != "ide" && b.config.HardDriveInterface != "sata" && b.config.HardDriveInterface != "scsi" {
 		errs = packer.MultiErrorAppend(
-			errs, errors.New("hard_drive_interface can only be ide or sata"))
+			errs, errors.New("hard_drive_interface can only be ide, sata, or scsi"))
 	}
 
 	if b.config.HTTPPortMin > b.config.HTTPPortMax {
