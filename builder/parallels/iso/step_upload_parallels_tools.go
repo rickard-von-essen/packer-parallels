@@ -30,7 +30,7 @@ func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepA
 	}
 
 	// Warning for https://github.com/mitchellh/packer/issues/951
-	if strings.Contains(config.ParallelsToolsUrl, " ") {
+	if strings.Contains(config.ParallelsToolsURL, " ") {
 		log.Printf("Space(s) found in tools path. You will hit https://github.com/mitchellh/packer/issues/951")
 	}
 
@@ -40,7 +40,7 @@ func (s *stepUploadParallelsTools) Run(state multistep.StateBag) multistep.StepA
 		return multistep.ActionHalt
 	}
 
-	f, err := os.Open(config.ParallelsToolsUrl)
+	f, err := os.Open(config.ParallelsToolsURL)
 	if err != nil {
 		state.Put("error", fmt.Errorf("Error opening Parallels Tools ISO: %s", err))
 		return multistep.ActionHalt

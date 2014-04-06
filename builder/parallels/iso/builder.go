@@ -41,7 +41,7 @@ type config struct {
 	DiskSize             uint     `mapstructure:"disk_size"`
 	ParallelsToolsMode   string   `mapstructure:"parallels_tools_mode"`
 	ParallelsToolsPath   string   `mapstructure:"parallels_tools_path"`
-	ParallelsToolsUrl    string   `mapstructure:"parallels_tools_url"`
+	ParallelsToolsURL    string   `mapstructure:"parallels_tools_url"`
 	ParallelsToolsSHA256 string   `mapstructure:"parallels_tools_sha256"`
 	GuestOSType          string   `mapstructure:"guest_os_type"`
 	GuestOSDistribution  string   `mapstructure:"guest_os_distribution"`
@@ -98,8 +98,8 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 		b.config.ParallelsToolsPath = "prl-tools.iso"
 	}
 
-	if b.config.ParallelsToolsUrl == "" {
-		b.config.ParallelsToolsUrl = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-other.iso"
+	if b.config.ParallelsToolsURL == "" {
+		b.config.ParallelsToolsURL = "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-other.iso"
 	}
 
 	if b.config.HardDriveInterface == "" {
@@ -129,7 +129,7 @@ func (b *Builder) Prepare(raws ...interface{}) ([]string, error) {
 	// Errors
 	templates := map[string]*string{
 		"parallels_tools_mode":   &b.config.ParallelsToolsMode,
-		"parallels_tools_url":    &b.config.ParallelsToolsUrl,
+		"parallels_tools_url":    &b.config.ParallelsToolsURL,
 		"parallels_tools_sha256": &b.config.ParallelsToolsSHA256,
 		"parallels_tools_path":   &b.config.ParallelsToolsPath,
 		"guest_os_type":          &b.config.GuestOSType,

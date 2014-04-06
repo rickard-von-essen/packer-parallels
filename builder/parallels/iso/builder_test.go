@@ -37,20 +37,16 @@ func TestBuilderPrepare_Defaults(t *testing.T) {
 		t.Fatalf("should not have error: %s", err)
 	}
 
-	if b.config.GuestAdditionsMode != GuestAdditionsModeUpload {
-		t.Errorf("bad guest additions mode: %s", b.config.GuestAdditionsMode)
+	if b.config.ParallelsToolsMode != ParallelsToolsModeUpload {
+		t.Errorf("bad parallels tools mode: %s", b.config.ParallelsToolsMode)
 	}
 
-	if b.config.GuestOSType != "Other" {
+	if b.config.GuestOSType != "other" {
 		t.Errorf("bad guest OS type: %s", b.config.GuestOSType)
 	}
 
 	if b.config.VMName != "packer-foo" {
 		t.Errorf("bad vm name: %s", b.config.VMName)
-	}
-
-	if b.config.Format != "ovf" {
-		t.Errorf("bad format: %s", b.config.Format)
 	}
 }
 
@@ -86,12 +82,12 @@ func TestBuilderPrepare_DiskSize(t *testing.T) {
 	}
 }
 
-func TestBuilderPrepare_GuestAdditionsMode(t *testing.T) {
+func TestBuilderPrepare_ParallelsToolsMode(t *testing.T) {
 	var b Builder
 	config := testConfig()
 
 	// test default mode
-	delete(config, "guest_additions_mode")
+	delete(config, "parallels_tools_mode")
 	warns, err := b.Prepare(config)
 	if len(warns) > 0 {
 		t.Fatalf("bad: %#v", warns)
@@ -101,7 +97,7 @@ func TestBuilderPrepare_GuestAdditionsMode(t *testing.T) {
 	}
 
 	// Test another mode
-	config["guest_additions_mode"] = "attach"
+	config["parallels_tools_mode"] = "attach"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
@@ -111,12 +107,12 @@ func TestBuilderPrepare_GuestAdditionsMode(t *testing.T) {
 		t.Fatalf("should not have error: %s", err)
 	}
 
-	if b.config.GuestAdditionsMode != GuestAdditionsModeAttach {
-		t.Fatalf("bad: %s", b.config.GuestAdditionsMode)
+	if b.config.ParallelsToolsMode != ParallelsToolsModeAttach {
+		t.Fatalf("bad: %s", b.config.ParallelsToolsMode)
 	}
 
 	// Test bad mode
-	config["guest_additions_mode"] = "teleport"
+	config["parllels_tools_mode"] = "teleport"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
@@ -127,11 +123,11 @@ func TestBuilderPrepare_GuestAdditionsMode(t *testing.T) {
 	}
 }
 
-func TestBuilderPrepare_GuestAdditionsPath(t *testing.T) {
+func TestBuilderPrepare_ParallelsToolsPath(t *testing.T) {
 	var b Builder
 	config := testConfig()
 
-	delete(config, "guest_additions_path")
+	delete(config, "parallesl_tools_path")
 	warns, err := b.Prepare(config)
 	if len(warns) > 0 {
 		t.Fatalf("bad: %#v", warns)
@@ -140,11 +136,11 @@ func TestBuilderPrepare_GuestAdditionsPath(t *testing.T) {
 		t.Fatalf("bad err: %s", err)
 	}
 
-	if b.config.GuestAdditionsPath != "VBoxGuestAdditions.iso" {
-		t.Fatalf("bad: %s", b.config.GuestAdditionsPath)
+	if b.config.ParallelsToolsPath != "prl-tools.iso" {
+		t.Fatalf("bad: %s", b.config.ParallelsToolsPath)
 	}
 
-	config["guest_additions_path"] = "foo"
+	config["parallels_tools_path"] = "foo"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
@@ -154,16 +150,16 @@ func TestBuilderPrepare_GuestAdditionsPath(t *testing.T) {
 		t.Fatalf("should not have error: %s", err)
 	}
 
-	if b.config.GuestAdditionsPath != "foo" {
-		t.Fatalf("bad size: %s", b.config.GuestAdditionsPath)
+	if b.config.ParallelsToolsPath != "foo" {
+		t.Fatalf("bad size: %s", b.config.ParallelsToolsPath)
 	}
 }
 
-func TestBuilderPrepare_GuestAdditionsSHA256(t *testing.T) {
+func TestBuilderPrepare_ParallelsToolsSHA256(t *testing.T) {
 	var b Builder
 	config := testConfig()
 
-	delete(config, "guest_additions_sha256")
+	delete(config, "parallels_tools_sha256")
 	warns, err := b.Prepare(config)
 	if len(warns) > 0 {
 		t.Fatalf("bad: %#v", warns)
@@ -172,11 +168,11 @@ func TestBuilderPrepare_GuestAdditionsSHA256(t *testing.T) {
 		t.Fatalf("bad err: %s", err)
 	}
 
-	if b.config.GuestAdditionsSHA256 != "" {
-		t.Fatalf("bad: %s", b.config.GuestAdditionsSHA256)
+	if b.config.ParallelsToolsSHA256 != "" {
+		t.Fatalf("bad: %s", b.config.ParallelsToolsSHA256)
 	}
 
-	config["guest_additions_sha256"] = "FOO"
+	config["parallels_tools_sha256"] = "FOO"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
@@ -186,16 +182,16 @@ func TestBuilderPrepare_GuestAdditionsSHA256(t *testing.T) {
 		t.Fatalf("should not have error: %s", err)
 	}
 
-	if b.config.GuestAdditionsSHA256 != "foo" {
-		t.Fatalf("bad size: %s", b.config.GuestAdditionsSHA256)
+	if b.config.ParallelsToolsSHA256 != "foo" {
+		t.Fatalf("bad size: %s", b.config.ParallelsToolsSHA256)
 	}
 }
 
-func TestBuilderPrepare_GuestAdditionsURL(t *testing.T) {
+func TestBuilderPrepare_ParallelsToolsURL(t *testing.T) {
 	var b Builder
 	config := testConfig()
 
-	config["guest_additions_url"] = ""
+	config["parallels_tools_url"] = ""
 	warns, err := b.Prepare(config)
 	if len(warns) > 0 {
 		t.Fatalf("bad: %#v", warns)
@@ -204,11 +200,11 @@ func TestBuilderPrepare_GuestAdditionsURL(t *testing.T) {
 		t.Fatalf("err: %s", err)
 	}
 
-	if b.config.GuestAdditionsURL != "" {
-		t.Fatalf("should be empty: %s", b.config.GuestAdditionsURL)
+	if b.config.ParallelsToolsURL != "/Applications/Parallels Desktop.app/Contents/Resources/Tools/prl-tools-other.iso" {
+		t.Fatalf("bad: %s", b.config.ParallelsToolsURL)
 	}
 
-	config["guest_additions_url"] = "http://www.packer.io"
+	config["parallels_tools_url"] = "http://www.packer.io"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
@@ -233,7 +229,7 @@ func TestBuilderPrepare_HardDriveInterface(t *testing.T) {
 		t.Fatalf("err: %s", err)
 	}
 
-	if b.config.HardDriveInterface != "ide" {
+	if b.config.HardDriveInterface != "sata" {
 		t.Fatalf("bad: %s", b.config.HardDriveInterface)
 	}
 
@@ -249,7 +245,7 @@ func TestBuilderPrepare_HardDriveInterface(t *testing.T) {
 	}
 
 	// Test with a good
-	config["hard_drive_interface"] = "sata"
+	config["hard_drive_interface"] = "scsi"
 	b = Builder{}
 	warns, err = b.Prepare(config)
 	if len(warns) > 0 {
