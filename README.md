@@ -18,29 +18,31 @@ This has just been developed and testing is just started. Some feaures are untes
  - Install [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg)
  - Install [prl-utils](https://github.com/rickard-von-essen/prl-utils/)
 
-  ```
+  ```bash
   brew tap rickard-von-essen/homebrew-formulae
   brew install --HEAD prl-utils
   ```
  - Install this plugin
 
-```bash
-mkdir -p $GOPATH/src/github.com/rickard-von-essen/
-cd $GOPATH/src/github.com/rickard-von-essen/
-git clone https://github.com/rickard-von-essen/packer-parallels.git
-cd packer-parallels
-make
-```
+
+  ```bash
+  mkdir -p $GOPATH/src/github.com/rickard-von-essen/
+  cd $GOPATH/src/github.com/rickard-von-essen/
+  git clone https://github.com/rickard-von-essen/packer-parallels.git
+  cd packer-parallels
+  make
+  ```
+
  - Add the following to ```~/.packerconfig```
 
-```
-{
-  "builders": {
-    "parallels-iso": "builder-parallels-iso",
-    "parallels-pvm": "builder-parallels-pvm"
-   }
-}
-```
+  ```json
+  {
+    "builders": {
+      "parallels-iso": "builder-parallels-iso",
+      "parallels-pvm": "builder-parallels-pvm"
+     }
+  }
+  ```
  - Be sure that ```$GOPATH/bin```is on your path _BEFORE_ packer otherwise the patched _post-processor-vagrant_ plugin won't be used.
 
 ## Usage
