@@ -230,7 +230,7 @@ func scancodes(message string) []string {
 			if keyShift {
 				scancode = append(scancode, "aa")
 			}
-			log.Printf("Sending char '%c', code '%v', shift %v", r, scancode, keyShift)
+			// log.Printf("Sending char '%c', code '%v', shift %v", r, scancode, keyShift)
 		}
 
 		result = append(result, scancode...)
