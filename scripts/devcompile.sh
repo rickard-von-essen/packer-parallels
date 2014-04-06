@@ -40,7 +40,7 @@ GO_INSTALLED_VERSION=$(go version | cut -d ' ' -f 3)
 GO_INSTALLED_VERSION=${GO_INSTALLED_VERSION#"go"}
 
 echo -e "${OK_COLOR}==> Verifying Go"
-#verify_go $GO_MINIMUM_VERSION $GO_INSTALLED_VERSION
+verify_go $GO_MINIMUM_VERSION $GO_INSTALLED_VERSION
 
 # Get the parent directory of where this script is.
 SOURCE="${BASH_SOURCE[0]}"
@@ -58,5 +58,3 @@ export XC_OS=$(go env GOOS)
 # Move all the compiled things to the PATH
 IFS=: MAIN_GOPATH=( $GOPATH )
 cp pkg/${XC_OS}_${XC_ARCH}/* ${MAIN_GOPATH}/bin
-cp bin/prltype ${MAIN_GOPATH}/bin
-rm bin/prltype && rmdir bin

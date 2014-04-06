@@ -14,8 +14,14 @@ This has just been developed and testing is just started. Some feaures are untes
 
 ## Building / Installing
 
- - Install packer.
- - Install [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg), download and install it.
+ - Install [Packer](http://packer.io/)
+ - Install [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg)
+ - Install [prl-utils](https://github.com/rickard-von-essen/prl-utils/)
+
+  ```
+  brew tap rickard-von-essen/homebrew-formulae
+  brew install --HEAD prl-utils
+  ```
  - Install this plugin
 
 ```bash
@@ -61,3 +67,7 @@ This code is distributed under the MIT license, see _LICENSE_.
 © _2014 Rickard von Essen, Yung Sang_
 
 This work is derived from the _Packer VirtualBox builder plugin_ authored by _Mitchell Hashimoto et al._ For more information see [Packer](https://github.com/mitchellh/packer).
+
+---
+
+Parallels Desktop is a registered trademark of Parallels Software International, Inc. The Parallels logo is a trademark of Parallels Holdings, Ltd.
