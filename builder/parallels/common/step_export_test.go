@@ -31,13 +31,10 @@ func TestStepExport(t *testing.T) {
 	}
 
 	// Test driver
-	if len(driver.VBoxManageCalls) != 2 {
-		t.Fatal("should call vboxmanage")
+	if len(driver.PrlctlCalls) != 1 {
+		t.Fatal("should call prlctl")
 	}
-	if driver.VBoxManageCalls[0][0] != "modifyvm" {
-		t.Fatal("bad")
-	}
-	if driver.VBoxManageCalls[1][0] != "export" {
+	if driver.PrlctlCalls[0][0] != "unregister" {
 		t.Fatal("bad")
 	}
 }

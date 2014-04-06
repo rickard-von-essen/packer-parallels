@@ -26,8 +26,8 @@ func TestStepRemoveDevices(t *testing.T) {
 	}
 
 	// Test that ISO was removed
-	if len(driver.VBoxManageCalls) != 0 {
-		t.Fatalf("bad: %#v", driver.VBoxManageCalls)
+	if len(driver.PrlctlCalls) != 0 {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
 	}
 }
 
@@ -49,11 +49,14 @@ func TestStepRemoveDevices_attachedIso(t *testing.T) {
 	}
 
 	// Test that ISO was removed
-	if len(driver.VBoxManageCalls) != 1 {
-		t.Fatalf("bad: %#v", driver.VBoxManageCalls)
+	if len(driver.PrlctlCalls) != 1 {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
 	}
-	if driver.VBoxManageCalls[0][3] != "IDE Controller" {
-		t.Fatalf("bad: %#v", driver.VBoxManageCalls)
+	if driver.PrlctlCalls[0][2] != "--device-del" {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
+	}
+	if driver.PrlctlCalls[0][3] != "cdrom0" {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
 	}
 }
 
@@ -75,10 +78,13 @@ func TestStepRemoveDevices_floppyPath(t *testing.T) {
 	}
 
 	// Test that both were removed
-	if len(driver.VBoxManageCalls) != 1 {
-		t.Fatalf("bad: %#v", driver.VBoxManageCalls)
+	if len(driver.PrlctlCalls) != 1 {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
 	}
-	if driver.VBoxManageCalls[0][3] != "Floppy Controller" {
-		t.Fatalf("bad: %#v", driver.VBoxManageCalls)
+	if driver.PrlctlCalls[0][2] != "--device-del" {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
+	}
+	if driver.PrlctlCalls[0][3] != "fdd0" {
+		t.Fatalf("bad: %#v", driver.PrlctlCalls)
 	}
 }

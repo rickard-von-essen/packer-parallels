@@ -36,19 +36,17 @@ func TestStepAttachFloppy(t *testing.T) {
 		t.Fatal("should NOT have error")
 	}
 
-	if len(driver.VBoxManageCalls) != 2 {
-		t.Fatal("not enough calls to VBoxManage")
-	}
-	if driver.VBoxManageCalls[0][0] != "storagectl" {
-		t.Fatal("bad call")
-	}
-	if driver.VBoxManageCalls[1][0] != "storageattach" {
-		t.Fatal("bad call")
+	if len(driver.PrlctlCalls) != 1 {
+		t.Fatal("not enough calls to prlctl")
 	}
 
-	// Test the cleanup
-	step.Cleanup(state)
-	if driver.VBoxManageCalls[2][0] != "storageattach" {
+	if driver.PrlctlCalls[0][0] != "set" {
+		t.Fatal("bad call")
+	}
+	if driver.PrlctlCalls[0][2] != "--device-add" {
+		t.Fatal("bad call")
+	}
+	if driver.PrlctlCalls[0][3] != "fdd" {
 		t.Fatal("bad call")
 	}
 }
@@ -67,7 +65,7 @@ func TestStepAttachFloppy_noFloppy(t *testing.T) {
 		t.Fatal("should NOT have error")
 	}
 
-	if len(driver.VBoxManageCalls) > 0 {
+	if len(driver.PrlctlCalls) > 0 {
 		t.Fatal("should not call vboxmanage")
 	}
 }

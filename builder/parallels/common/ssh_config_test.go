@@ -19,39 +19,8 @@ func TestSSHConfigPrepare(t *testing.T) {
 		t.Fatalf("err: %#v", errs)
 	}
 
-	if c.SSHHostPortMin != 2222 {
-		t.Errorf("bad min ssh host port: %d", c.SSHHostPortMin)
-	}
-
-	if c.SSHHostPortMax != 4444 {
-		t.Errorf("bad max ssh host port: %d", c.SSHHostPortMax)
-	}
-
 	if c.SSHPort != 22 {
 		t.Errorf("bad ssh port: %d", c.SSHPort)
-	}
-}
-
-func TestSSHConfigPrepare_SSHHostPort(t *testing.T) {
-	var c *SSHConfig
-	var errs []error
-
-	// Bad
-	c = testSSHConfig()
-	c.SSHHostPortMin = 1000
-	c.SSHHostPortMax = 500
-	errs = c.Prepare(testConfigTemplate(t))
-	if len(errs) == 0 {
-		t.Fatalf("bad: %#v", errs)
-	}
-
-	// Good
-	c = testSSHConfig()
-	c.SSHHostPortMin = 50
-	c.SSHHostPortMax = 500
-	errs = c.Prepare(testConfigTemplate(t))
-	if len(errs) > 0 {
-		t.Fatalf("should not have error: %s", errs)
 	}
 }
 
