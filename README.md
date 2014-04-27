@@ -22,14 +22,21 @@ This has just been developed and testing is just started. Some feaures are untes
   brew tap rickard-von-essen/homebrew-formulae
   brew install --HEAD prl-utils
   ```
- - Install this plugin
 
+ - Installing Go and dependencies
+
+  ```bash
+  brew install go git mercurial bzr
+  ```
+
+ - Install this plugin
 
   ```bash
   mkdir -p $GOPATH/src/github.com/rickard-von-essen/
   cd $GOPATH/src/github.com/rickard-von-essen/
   git clone https://github.com/rickard-von-essen/packer-parallels.git
   cd packer-parallels
+  go get github.com/mitchellh/gox
   make
   ```
 
