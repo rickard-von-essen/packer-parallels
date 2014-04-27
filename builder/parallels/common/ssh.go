@@ -1,10 +1,10 @@
 package common
 
 import (
-	gossh "code.google.com/p/gosshold/ssh"
+	"code.google.com/p/go.crypto/ssh"
 	"fmt"
 	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/communicator/ssh"
+	packerssh "github.com/mitchellh/packer/communicator/ssh"
 	"io/ioutil"
 	"os"
 )
@@ -26,31 +26,31 @@ func SSHAddress(state multistep.StateBag) (string, error) {
 	return fmt.Sprintf("%s:22", ip), nil
 }
 
-func SSHConfigFunc(config SSHConfig) func(multistep.StateBag) (*gossh.ClientConfig, error) {
-	return func(state multistep.StateBag) (*gossh.ClientConfig, error) {
-		auth := []gossh.ClientAuth{
-			gossh.ClientAuthPassword(ssh.Password(config.SSHPassword)),
-			gossh.ClientAuthKeyboardInteractive(
-				ssh.PasswordKeyboardInteractive(config.SSHPassword)),
+func SSHConfigFunc(config SSHConfig) func(multistep.StateBag) (*ssh.ClientConfig, error) {
+	return func(state multistep.StateBag) (*ssh.ClientConfig, error) {
+		auth := []ssh.AuthMethod{
+			ssh.Password(config.SSHPassword),
+			ssh.KeyboardInteractive(
+				packerssh.PasswordKeyboardInteractive(config.SSHPassword)),
 		}
 
 		if config.SSHKeyPath != "" {
-			keyring, err := sshKeyToKeyring(config.SSHKeyPath)
+			signer, err := sshKeyToSigner(config.SSHKeyPath)
 			if err != nil {
 				return nil, err
 			}
 
-			auth = append(auth, gossh.ClientAuthKeyring(keyring))
+			auth = append(auth, ssh.PublicKeys(signer))
 		}
 
-		return &gossh.ClientConfig{
+		return &ssh.ClientConfig{
 			User: config.SSHUser,
 			Auth: auth,
 		}, nil
 	}
 }
 
-func sshKeyToKeyring(path string) (gossh.ClientKeyring, error) {
+func sshKeyToSigner(path string) (ssh.Signer, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -62,10 +62,10 @@ func sshKeyToKeyring(path string) (gossh.ClientKeyring, error) {
 		return nil, err
 	}
 
-	keyring := new(ssh.SimpleKeychain)
-	if err := keyring.AddPEMKey(string(keyBytes)); err != nil {
-		return nil, err
+	signer, err := ssh.ParsePrivateKey(keyBytes)
+	if err != nil {
+		return nil, fmt.Errorf("Error setting up SSH config: %s", err)
 	}
 
-	return keyring, nil
+	return signer, nil
 }
