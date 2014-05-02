@@ -1,81 +1,16 @@
+# Deprecated!
+
+**This has now been merged into main [Packer](https://github.com/mitchellh/packer) project!** (since [PR #1101](https://github.com/mitchellh/packer/pull/1101))
+
+The original code is keept in the _original_master_ branch for reference.
+Deprecated, this has been merged into Packer.
+
 # Packer Parallels Plugin
 
-This is a custom builder plugin for [Packer](http://www.packer.io/) using [Parallels Desktop for Mac](http://www.parallels.com/products/desktop/) and a patched version of the _post-processor-vagrant_.
+This used to be a builder plugin for [Packer](http://www.packer.io/) using [Parallels Desktop for Mac](http://www.parallels.com/products/desktop/) and a patched version of the _post-processor-vagrant_. 
+
 
 ![Parallels Logo](imgs/parallels_small.png)
-
-**Current status: in Beta!**
-
-[![Build Status](https://travis-ci.org/rickard-von-essen/packer-parallels.png?branch=master)](https://travis-ci.org/rickard-von-essen/packer-parallels)
-
-
-## Status
-This has just been developed and testing is just started. Some feaures are untested or currently broken. If you use this be prepaired to crash, debug and report issues (include debug logs) or submit patches (pull requests).
-
-## Building / Installing
-
- - Install [Packer](http://packer.io/)
- - Install [Parallels Virtualization SDK 9 for Mac](http://download.parallels.com//desktop/v9/pde.hf1/ParallelsVirtualizationSDK-9.0.24172.951362.dmg)
- - Install [prl-utils](https://github.com/rickard-von-essen/prl-utils/)
-
-  ```bash
-  brew tap rickard-von-essen/homebrew-formulae
-  brew install --HEAD prl-utils
-  ```
-
- - Installing Go and dependencies
-
-  ```bash
-  brew install go git mercurial bzr
-  ```
-
- - Install this plugin
-
-  ```bash
-  mkdir -p $GOPATH/src/github.com/rickard-von-essen/
-  cd $GOPATH/src/github.com/rickard-von-essen/
-  git clone https://github.com/rickard-von-essen/packer-parallels.git
-  cd packer-parallels
-  go get github.com/mitchellh/gox
-  make
-  ```
-
- - Add the following to ```~/.packerconfig```
-
-  ```json
-  {
-    "builders": {
-      "parallels-iso": "builder-parallels-iso",
-      "parallels-pvm": "builder-parallels-pvm"
-     }
-  }
-  ```
- - Be sure that ```$GOPATH/bin```is on your path _BEFORE_ packer otherwise the patched _post-processor-vagrant_ plugin won't be used.
-
-## Usage
-
-### Parallels Desktop Builders
-
- - [parallels-iso](https://github.com/rickard-von-essen/packer-parallels/blob/master/ISO.md)
- - [parallels-pvm](https://github.com/rickard-von-essen/packer-parallels/blob/master/PVM.md)
-
-### Vagrant Post-Processor
-
- This continas a pacthed _Vagrant Post-Processsor_ that can build _Parallels Desktop Vagrant Boxes_. See the general documentation for [Packer Vagrant Post-Processor](http://www.packer.io/docs/post-processors/vagrant.html)
-
-## Issues
-If you find any bugs please open a issue at [github](https://github.com/rickard-von-essen/packer-parallels/issues). 
-
-## Contributing
-If you have any improvements open a pull request at [github](https://github.com/rickard-von-essen/packer-parallels/pulls). 
-
-## License
-
-This code is distributed under the MIT license, see _LICENSE_.
-
-© _2014 Rickard von Essen, Yung Sang_
-
-This work is derived from the _Packer VirtualBox builder plugin_ authored by _Mitchell Hashimoto et al._ For more information see [Packer](https://github.com/mitchellh/packer).
 
 ---
 
